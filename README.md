@@ -1,288 +1,95 @@
-Welcome to your new TanStack Start app!
+# Alembic
 
-# Getting Started
+Potion crafting in PF2e tends to be bookkeeping. Alembic makes it an experiment: measure ingredients across Arcane, Primal, Occult and Divine, brew a batch, then use the result to get closer to a hidden target.
 
-To run this application:
+This is the Casper Studios take-home sandbox. Ingredients are unlimited, every brew costs one downtime day, and all sample ingredients, potions and characters are fictional. The rules are in [Brewing rules.md](Brewing%20rules.md); the delivery requirements are in [SPEC.md](SPEC.md).
+
+## The workshop
+
+The workshop starts with Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor). The bench accepts up to four ingredient units, including repeats, and shows the four tradition totals as you mix. You can supply a table d20 or let the server roll it.
+
+Brewing resolves on the server, including ingredient and crafter gates, PF2e degrees of success, perfect batches and downtime. Results guide the next attempt with tradition arrows. The codex records discoveries and perfected recipes, and the brew log keeps the previous attempts. GM view has the answer key and reveal controls; player responses leave the hidden targets and recipes out. The crafter sheet changes Wren's level, Intelligence, Crafting, feat and tools.
+
+Clerk handles sign-in and Neon stores each account's workshop. This sandbox deliberately uses a Clerk development instance, so its development badge, accounts.dev redirect and OAuth branding are expected. There's no guest sign-in.
+
+## Incomplete
+
+The live deployment is currently blocked by [Railway's platform incident](https://status.railway.com/): project creation returns “Deploys have been paused temporarily”. There is no deployed URL yet. Final verification and any remaining limitations will be recorded here before submission.
+
+## Run locally
+
+You'll need Bun and a Neon database. Create `.env.local` in the project root:
+
+```dotenv
+VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key
+CLERK_SECRET_KEY=sk_test_your_secret_key
+DATABASE_URL=postgresql://your_neon_connection_string
+VITE_CLERK_SIGN_IN_URL=/sign-in
+VITE_CLERK_SIGN_UP_URL=/sign-up
+```
+
+Use the same Clerk application for both keys. Enable GitHub, Google and Discord in Clerk, keep access open, and require only an email address so OAuth sign-up doesn't stop for extra profile fields. Never put the secret key or database URL in a `VITE_` variable.
 
 ```bash
 bun install
-bun --bun run dev
+bun run db:push
+bun run dev
 ```
 
-# Building For Production
+Open **http://localhost:3000**, not `127.0.0.1`, so Clerk's local development flow works. The first signed-in workshop request creates the account's starting state. Database creation is explicit; the Vite build never provisions or seeds a temporary Neon database.
 
-To build this application for production:
+## Tests
 
 ```bash
-bun --bun run build
+bun test
+bunx tsc --noEmit
+bun run check
 ```
 
-## Styling
+The brewing tests cover the worked examples and outcome rules. The player projection test checks that hidden answer-key data doesn't reach player view.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+## The 60-second tour
 
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
-```
-
-
-## Setting up Clerk
-
-1. Create an application in the [Clerk dashboard](https://dashboard.clerk.com).
-2. Copy its publishable and secret keys into `.env.local`:
-
-   ```bash
-   VITE_CLERK_PUBLISHABLE_KEY=pk_test_...
-   CLERK_SECRET_KEY=sk_test_...
-   ```
-
-3. Start the app and visit `/demo/clerk`.
-
-### What's wired up
-
-- `clerkMiddleware()` authenticates each server request from `src/start.ts`.
-- `<ClerkProvider>` supplies auth state throughout the app.
-- `<SignInButton>` and `<UserButton>` in the header respond to the session.
-- `/demo/clerk` shows Clerk's prebuilt sign-in UI and signed-in user data.
-
-### Protecting a route
-
-Use `auth()` in a loader or server function when authorization must happen on the
-server:
-
-```tsx
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { createServerFn } from '@tanstack/react-start'
-import { auth } from '@clerk/tanstack-react-start/server'
-
-const getAuth = createServerFn({ method: 'GET' }).handler(async () => {
-  const { userId } = await auth()
-  return { userId }
-})
-
-export const Route = createFileRoute('/dashboard')({
-  beforeLoad: async () => {
-    const { userId } = await getAuth()
-    if (!userId) throw redirect({ to: '/' })
-  },
-})
-```
-
-`<Show when="signed-in">` remains useful for presentation, but server-side checks
-are the security boundary. See Clerk's [TanStack Start docs](https://clerk.com/docs/tanstack-react-start/getting-started/quickstart).
-
-### Production checklist
-
-- Set both keys in the production environment; never expose `CLERK_SECRET_KEY`.
-- Use production keys from a dedicated production Clerk instance.
-- Configure the production domain and any social connections in the Clerk dashboard.
-
-
-## Setting up Neon
-
-When running the `dev` command, `vite-plugin-neon-new` will identify there is not a database setup. It will then create and seed a claimable database.
-
-It is the same process as [Neon Launchpad](https://neon.new).
-
-> [!IMPORTANT]  
-> Claimable databases expire in 72 hours.
-
-
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
-
-```bash
-pnpm dlx shadcn@latest add button
-```
-
+1. Sign in with GitHub, Google or Discord. The workshop opens with Wren, the ingredient shelf and Healing Potion (Minor) already Known.
+2. Follow the mentor's note: add **Heartmoss + Marsh Toad Gland**. Set the table d20 to **6** and brew. The totals are **7/26/1/8**, the DC is **15**, and the result is off by **14**. Arcane and Primal are on; Occult and Divine are low.
+3. Add **Glowcap** to that mix and brew again with d20 **6**. The totals are **7/26/10/13**, a perfect success that makes **1 + 1d3** potions. The codex marks Healing Potion (Minor) Perfected.
+4. Experiment toward the other ten potions. Try **Silverleaf + Ghost Orchid + Moonwell Water** for a blocked brew: Truth Potion is level 6, but Wren is level 5.
+5. Switch **Viewing as** to **GM**. The answer key shows every target and perfect recipe. Reveal **Invisibility Potion**, then return to Player view. Its codex entry is Known, with its name, rarity, DC and odds, but no target.
 
 ## Deploy to Railway
 
-Railway's Railpack builder detects the project's package manager and package
-scripts automatically.
+`railway.json` uses Railpack, runs `bun run build`, starts the generated Nitro server with `bun run start` (`node .output/server/index.mjs`), and checks `/`. Railway supplies `PORT`.
 
-1. Push this repo to GitHub
-2. Visit https://railway.com/new and create a project from your repo
-3. In the **Variables** tab, add the entries from `.env.example` with their production values
-4. Deploy, then open **Networking** and select **Generate Domain**
+Create and link the `alembic` project and service with the authenticated Railway CLI:
 
-Railpack runs the project's build script and starts the generated Nitro server
-with `node .output/server/index.mjs`. The server handles SSR, server functions,
-API routes, and static assets.
-
-Need a database? Add one from the Railway project canvas, then connect it to the
-app with a Railway reference variable. The variable name and value depend on the
-database service you choose.
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
+```bash
+railway init --name alembic
+railway add --service alembic
+railway service link alembic
 ```
 
-Then anywhere in your JSX you can use it like so:
+Set all five variables shown above on the service before deploying. Railway service variables are available during both the build and runtime; the `VITE_` values must exist during the build because Vite embeds them in the client assets. Keep `.env.local` out of uploads and source control. Push the Neon schema once with `bun run db:push` using the deployment database URL.
 
-```tsx
-<Link to="/about">About</Link>
+```bash
+railway up --service alembic --environment production --detach
+railway domain --service alembic
 ```
 
-This will create a link that will navigate to the `/about` route.
+Redeploy from this linked directory with:
 
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
+```bash
+railway up --service alembic --environment production --detach
 ```
 
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+For a local production check, run `bun run build`, then start with the variables from `.env.local` loaded into the environment. Node doesn't load `.env.local` automatically:
 
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
+```bash
+set -a
+. ./.env.local
+set +a
+bun run start
 ```
 
-## API Routes
+## Licence and content
 
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+This is unofficial PF2e homebrew, not a Paizo product or endorsement. The in-app footer carries the ORC / Community Use notice. All campaign-facing sample content in this repository is fictional.

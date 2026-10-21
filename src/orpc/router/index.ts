@@ -1,6 +1,55 @@
-import { addTodo, listTodos } from './todos'
+import { auth } from "@clerk/tanstack-react-start/server";
+import { ORPCError, os } from "@orpc/server";
+import {
+	brewAttemptSchema,
+	crafterEditSchema,
+	revealSchema,
+	viewingSetSchema,
+} from "#/orpc/schema";
+import {
+	attemptBrew,
+	getAnswerKey,
+	getWorkshop,
+	revealPotion,
+	setViewing,
+	updateCrafter,
+} from "#/server/workshop";
+
+const authenticated = os
+	.$context<{ headers: Headers }>()
+	.use(async ({ next }) => {
+		const { userId } = await auth();
+		if (!userId) throw new ORPCError("UNAUTHORIZED");
+		return next({ context: { userId } });
+	});
 
 export default {
-  listTodos,
-  addTodo,
-}
+	workshop: {
+		get: authenticated.handler(({ context }) => getWorkshop(context.userId)),
+	},
+	brew: {
+		attempt: authenticated
+			.input(brewAttemptSchema)
+			.handler(({ context, input }) => attemptBrew(context.userId, input)),
+	},
+	crafter: {
+		update: authenticated
+			.input(crafterEditSchema)
+			.handler(({ context, input }) => updateCrafter(context.userId, input)),
+	},
+	viewing: {
+		set: authenticated
+			.input(viewingSetSchema)
+			.handler(({ context, input }) => setViewing(context.userId, input.as)),
+	},
+	gm: {
+		answerKey: authenticated.handler(({ context }) =>
+			getAnswerKey(context.userId),
+		),
+		reveal: authenticated
+			.input(revealSchema)
+			.handler(({ context, input }) =>
+				revealPotion(context.userId, input.potionId, input.revealed),
+			),
+	},
+};
