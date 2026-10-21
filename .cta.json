@@ -1,0 +1,32 @@
+{
+  "projectName": "alembic",
+  "mode": "file-router",
+  "bundler": "vite",
+  "typescript": true,
+  "tailwind": true,
+  "packageManager": "bun",
+  "git": true,
+  "install": true,
+  "intent": true,
+  "addOnOptions": {
+    "drizzle": {
+      "database": "postgresql"
+    }
+  },
+  "projectPreset": "default",
+  "routerOnly": false,
+  "includeExamples": true,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": [
+    "clerk",
+    "neon",
+    "drizzle",
+    "shadcn",
+    "form",
+    "oRPC",
+    "biome",
+    "railway",
+    "tanstack-query"
+  ]
+}
