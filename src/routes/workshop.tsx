@@ -109,7 +109,7 @@ function Workshop() {
 	return (
 		<main className="workshop-layout page-wrap">
 			<div className="workshop-heading">
-				<h1 className="text-2xl font-semibold tracking-tight">The workshop</h1>
+				<h1 className="text-2xl font-semibold tracking-tight">The Workshop</h1>
 				<div className="flex flex-wrap items-center gap-3">
 					<Tooltip>
 						<TooltipTrigger asChild>
