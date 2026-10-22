@@ -113,12 +113,13 @@ function Workshop() {
 				<div className="flex flex-wrap items-center gap-3">
 					<Tooltip>
 						<TooltipTrigger asChild>
-							<Button asChild variant="ghost" size="icon">
+							<Button asChild variant="ghost" size="sm">
 								<Link
 									to="/"
 									hash="first-brew"
-									aria-label="Learn how brewing works"
+									aria-label="New here? Learn how brewing works"
 								>
+									New here?
 									<CircleHelp className="size-4" aria-hidden="true" />
 								</Link>
 							</Button>
