@@ -1,28 +1,30 @@
 # Alembic
 
-Potion crafting in PF2e tends to be bookkeeping. Alembic makes it an experiment: measure ingredients across Arcane, Primal, Occult and Divine, brew a batch, then use the result to get closer to a hidden target.
-
-This is the Casper Studios take-home sandbox. Ingredients are unlimited, every brew costs one downtime day, and all sample ingredients, potions and characters are fictional. The rules are in [Brewing rules.md](Brewing%20rules.md); the delivery requirements are in [SPEC.md](SPEC.md).
-
 Live: https://alembic-six.vercel.app
 
-## Status
+I'm moving my PF2e colony campaign over from 5e, and crafting potions in PF2e is mostly bookkeeping: pick a formula, roll a check, done. I wanted it to feel like actually brewing. In Alembic every ingredient carries four values, one per magical tradition (Arcane, Primal, Occult, Divine), and every potion has a hidden target mix. You measure ingredients into the bench, brew, and the result tells you which traditions were low or high so you can get closer next time. PF2e's rarity, level, feat and Crafting check rules still apply on top of that.
 
-What works: sign-in, the workshop bootstrap, the brew bench with server-side resolution of every outcome-table cell (force any degree with the table d20), the result card, the codex with saved combinations and **Add to bench**, ingredient search and favourites, the brew log, the crafter edit sheet, Viewing as GM/Player, the GM answer key with potion or formula reveal, and the beginner landing page. `bun test` covers the worked examples in `Brewing rules.md` §12, every outcome cell and the player-view leak test.
+This is a public sandbox version for the Casper Studios take-home. Ingredients are unlimited, and all the ingredients, potions and characters in it are fictional. The full rules are in [Brewing rules.md](Brewing%20rules.md) and what I set out to build is in [SPEC.md](SPEC.md).
 
-What's incomplete: Discord sign-in isn't switched on in the Clerk dashboard yet (GitHub and Google work). The finite ingredient economy, exact-primary matching and real campaign content are deliberately out of scope for this sandbox. Railway had a platform outage during the timebox, so the app is deployed on Vercel instead.
+I built it in roughly two hours of active time. Railway had a platform-wide outage partway through, so I stopped, waited, then picked it back up and deployed to Vercel instead.
 
-## The workshop
+## What works
 
-The workshop starts with Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor). The bench accepts up to four ingredient units, including repeats, and shows the four tradition totals as you mix. You can supply a table d20 or let the server roll it.
+- Sign in with GitHub or Google (Clerk). Your first request creates your workshop: Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor).
+- The brew bench: up to four units, live tradition totals, and an optional table d20 so you can force any degree of success. Brewing resolves on the server, including every gate and every cell of the outcome table.
+- Result cards for a formed potion (off-by plus an arrow per tradition), an inert mix (one hint at most) and a blocked brew (names every gate it failed).
+- The codex: known potions, odds, best off-by, Perfected, and your best combination for each one with **Add to bench**. Hovering that button previews the mix on the bench.
+- Ingredient search and favourites, the brew log and the crafter edit sheet.
+- GM view: the answer key with every target and perfect recipe, plus a Hidden / Potion / Formula reveal per potion. Player responses never include targets, rooms or required ingredients, and there's a leak test for that.
+- A landing page that explains the mechanics for anyone who hasn't played Pathfinder.
 
-Brewing resolves on the server, including ingredient and crafter gates, PF2e degrees of success, perfect batches and downtime. Results guide the next attempt with tradition arrows. The codex saves your best formed combination for each potion, shows its off-by, and can replace the bench mix with it using **Add to bench**. The mentor's starting combination is available before your first brew. GM reveal controls can share only the potion's identity or its perfect formula, which takes precedence for **Add to bench** while revealed. Hiding the formula restores your best formed mix or the mentor's starting combination. The brew log keeps the previous attempts. Player responses never include targets, rooms, secondary budgets or required ingredients. The crafter sheet changes Wren's level, Intelligence, Crafting, feat and tools.
+## What's incomplete
 
-Clerk handles sign-in and Neon stores each account's workshop. This sandbox deliberately uses a Clerk development instance, so its development badge, accounts.dev redirect and OAuth branding are expected. There's no guest sign-in.
+Discord sign-in isn't switched on in the Clerk dashboard yet. The finite ingredient economy, exact-primary matching and my real campaign content are deliberately left out of this sandbox, they come later when it moves into my own app.
 
-## Run locally
+## Run it locally
 
-You'll need Bun and a Neon database. Create `.env.local` in the project root:
+You'll need Bun and a Neon database. Create `.env.local`:
 
 ```dotenv
 VITE_CLERK_PUBLISHABLE_KEY=pk_test_your_publishable_key
@@ -32,7 +34,7 @@ VITE_CLERK_SIGN_IN_URL=/sign-in
 VITE_CLERK_SIGN_UP_URL=/sign-up
 ```
 
-Use the same Clerk application for both keys. Enable GitHub, Google and Discord in Clerk, keep access open, and require only an email address so OAuth sign-up doesn't stop for extra profile fields. Never put the secret key or database URL in a `VITE_` variable.
+In the Clerk dashboard, turn on the social providers you want and keep email address as the only required identifier, otherwise OAuth sign-up stalls on an extra profile step.
 
 ```bash
 bun install
@@ -40,9 +42,9 @@ bun run db:push
 bun run dev
 ```
 
-Open **http://localhost:3000**, not `127.0.0.1`, so Clerk's local development flow works. The first signed-in workshop request creates the account's starting state. Database creation is explicit; the Vite build never provisions or seeds a temporary Neon database.
+Open http://localhost:3000 (not `127.0.0.1`, Clerk's dev flow expects `localhost`).
 
-## Tests
+Tests, typecheck and lint:
 
 ```bash
 bun test
@@ -50,39 +52,20 @@ bunx tsc --noEmit
 bun run check
 ```
 
-The brewing tests cover the worked examples and outcome rules. The player projection test checks that hidden answer-key data doesn't reach player view.
+The brewing tests pin the worked examples in `Brewing rules.md` §12 and every outcome cell. The projection test checks that answer-key data never reaches the player view.
 
 ## The 60-second tour
 
-1. Sign in with GitHub or Google. The workshop opens with Wren, the ingredient shelf and Healing Potion (Minor) already Known.
-2. Follow the mentor's note: add **Heartmoss + Marsh Toad Gland**. Set the table d20 to **6** and brew. The totals are **7/26/1/8**, the DC is **15**, and the result is off by **14**. Arcane and Primal are on; Occult and Divine are low.
-3. Add **Glowcap** to that mix and brew again with d20 **6**. The totals are **7/26/10/13**, a perfect success that makes **1 + 1d3** potions. The codex marks Healing Potion (Minor) Perfected.
-4. Experiment toward the other ten potions. Try **Silverleaf + Ghost Orchid + Moonwell Water** for a blocked brew: Truth Potion is level 6, but Wren is level 5.
-5. Switch **Viewing as** to **GM**. The answer key shows every target and perfect recipe. Choose **Potion** for **Invisibility Potion**, then return to Player view. Its codex entry is Known, with its name, rarity, DC and odds, but no target. Choose **Formula** to also share its combination and **Add to bench**, or **Hidden** to remove the GM reveal without erasing brewed or mentor knowledge.
+1. Sign in. The workshop opens with Wren and Healing Potion (Minor) already Known.
+2. Follow the mentor's note: add **Heartmoss + Marsh Toad Gland**, set the table d20 to **6** and brew. Totals are **7/26/1/8** against DC **15**, off by **14**. Arcane and Primal are on, Occult and Divine are low.
+3. Add **Glowcap** and brew again with **6**. Totals are **7/26/10/13**, a perfect mix that makes **1 + 1d3** potions, and the codex marks it Perfected.
+4. Try **Silverleaf + Ghost Orchid + Moonwell Water**. Truth Potion is level 6 and Wren is level 5, so the brew is blocked and says so.
+5. Switch **Viewing as** to **GM**. Set **Invisibility Potion** to **Potion**, switch back to Player, and it shows up in the codex with its name, rarity, DC and odds but no target. **Formula** also shares its recipe.
 
-## Deploy to Vercel
+## Deploying
 
-Nitro detects Vercel's `VERCEL=1` environment variable and builds `.vercel/output`, including static assets and the serverless function. Outside Vercel, `bun run build` keeps the Node server output used by `bun run start`. Neither output directory belongs in source control.
+It runs on Vercel. Nitro picks up `VERCEL=1` and builds `.vercel/output`; outside Vercel `bun run build` produces the Node server that `bun run start` runs. `bash scripts/vercel-deploy.sh` links the project, copies the five variables from `.env.local` into Vercel's production environment without printing them, and deploys.
 
-With the Vercel CLI installed and authenticated, deploy from the project root:
+## Licence
 
-```bash
-bash scripts/vercel-deploy.sh
-```
-
-The script links the `alembic` project, pipes all five variables from `.env.local` into Vercel's production environment, then runs `vercel deploy --prod`. It doesn't print their values or put secrets in command arguments. Existing production values are replaced. Vercel makes these variables available at build time and runtime; the `VITE_` values must exist during the build because Vite embeds them in the client assets. Keep `.env.local` out of uploads and source control. Push the Neon schema once with `bun run db:push` using the deployment database URL.
-
-Linking also lets the CLI refresh its `VERCEL_OIDC_TOKEN` entry in `.env.local`; that file stays local.
-
-For a local production check, build without `VERCEL` set and load `.env.local` before starting Node:
-
-```bash
-bun run build
-PORT=3001 node -e 'require("dotenv").config({path:".env.local",override:true,quiet:true});import("./.output/server/index.mjs")'
-```
-
-Open **http://localhost:3001**. With those environment variables already exported, `bun run start` runs the same server.
-
-## Licence and content
-
-This is unofficial PF2e homebrew, not a Paizo product or endorsement. The in-app footer carries the ORC / Community Use notice. All campaign-facing sample content in this repository is fictional.
+This is unofficial PF2e homebrew, not a Paizo product. The app's footer carries the ORC / Community Use notice.
