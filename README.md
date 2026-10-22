@@ -4,6 +4,8 @@ Potion crafting in PF2e tends to be bookkeeping. Alembic makes it an experiment:
 
 This is the Casper Studios take-home sandbox. Ingredients are unlimited, every brew costs one downtime day, and all sample ingredients, potions and characters are fictional. The rules are in [Brewing rules.md](Brewing%20rules.md); the delivery requirements are in [SPEC.md](SPEC.md).
 
+Live: https://alembic-six.vercel.app
+
 ## The workshop
 
 The workshop starts with Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor). The bench accepts up to four ingredient units, including repeats, and shows the four tradition totals as you mix. You can supply a table d20 or let the server roll it.
