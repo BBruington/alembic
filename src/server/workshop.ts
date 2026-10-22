@@ -59,11 +59,31 @@ export async function getWorkshop(userId: string) {
 			.limit(50),
 	]);
 	if (!crafter) throw new ORPCError("INTERNAL_SERVER_ERROR");
+	const recovered = await Promise.all(
+		entries.map(async (entry) => {
+			if (!entry.formed || entry.bestMix || entry.bestOffBy === null)
+				return entry;
+			const [best] = await db
+				.select({ mix: brews.mix })
+				.from(brews)
+				.where(
+					and(
+						eq(brews.campaignId, campaign.id),
+						sql`${brews.result}->>'kind' = 'formed'`,
+						sql`${brews.result}->>'potionId' = ${entry.potionId}`,
+						sql`(${brews.result}->>'offBy')::int = ${entry.bestOffBy}`,
+					),
+				)
+				.orderBy(desc(brews.createdAt))
+				.limit(1);
+			return { ...entry, bestMix: best?.mix ?? null };
+		}),
+	);
 	return toWorkshopView({
 		viewingAs: campaign.viewingAs,
 		isGm: campaign.gmUserId === userId,
 		crafter,
-		entries,
+		entries: recovered,
 		log: log.map((row) => ({
 			id: row.id,
 			createdAt: row.createdAt.toISOString(),
@@ -140,8 +160,8 @@ export async function attemptBrew(
 					set: {
 						formed: true,
 						perfected: sql`${codexEntries.perfected} OR ${result.perfect}`,
-						bestOffBy: sql`CASE WHEN ${codexEntries.bestMix} IS NULL THEN ${result.offBy} ELSE LEAST(${codexEntries.bestOffBy}, ${result.offBy}) END`,
-						bestMix: sql`CASE WHEN ${codexEntries.bestMix} IS NULL OR ${codexEntries.bestOffBy} IS NULL OR ${result.offBy} < ${codexEntries.bestOffBy} THEN excluded.best_mix ELSE ${codexEntries.bestMix} END`,
+						bestOffBy: sql`LEAST(${codexEntries.bestOffBy}, ${result.offBy})`,
+						bestMix: sql`CASE WHEN ${codexEntries.bestOffBy} IS NULL OR ${result.offBy} < ${codexEntries.bestOffBy} OR (${codexEntries.bestMix} IS NULL AND ${result.offBy} = ${codexEntries.bestOffBy}) THEN excluded.best_mix ELSE ${codexEntries.bestMix} END`,
 					},
 				});
 		}
