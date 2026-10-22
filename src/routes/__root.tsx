@@ -26,7 +26,10 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "A potion-brewing workshop for Pathfinder Second Edition.",
 			},
 		],
-		links: [{ rel: "stylesheet", href: appCss }],
+		links: [
+			{ rel: "stylesheet", href: appCss },
+			{ rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+		],
 	}),
 	shellComponent: RootDocument,
 });
