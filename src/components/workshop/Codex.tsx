@@ -87,7 +87,7 @@ export function Codex({
 									</span>
 								</p>
 								{entry.solvedMix && (
-									<div className="space-y-2">
+									<div>
 										<p className="text-xs">
 											{Object.entries(entry.solvedMix)
 												.map(
@@ -104,17 +104,6 @@ export function Codex({
 												</span>
 											)}
 										</p>
-										<Button
-											variant="outline"
-											size="sm"
-											onClick={() =>
-												entry.solvedMix && onUseMix(entry.solvedMix)
-											}
-											aria-label={`Add ${entry.name} combination to bench`}
-										>
-											<FlaskConical className="size-3.5" aria-hidden="true" />
-											Add to bench
-										</Button>
 									</div>
 								)}
 								{entry.source === "mentor" && entry.note && (
@@ -133,13 +122,17 @@ export function Codex({
 									</p>
 								)}
 							</div>
-							<div className="space-y-1.5">
-								<p className="text-xs font-medium tabular-nums">
-									≥ success{" "}
-									{Math.round(
-										(entry.odds.criticalSuccess + entry.odds.success) * 100,
-									)}
-									%
+							<div className="flex flex-col gap-1.5">
+								<p className="flex items-baseline gap-2 tabular-nums">
+									<span className="text-xl font-semibold text-foreground">
+										{Math.round(
+											(entry.odds.criticalSuccess + entry.odds.success) * 100,
+										)}
+										%
+									</span>
+									<span className="text-sm text-muted-foreground">
+										chance of success
+									</span>
 								</p>
 								<div
 									className="flex h-1 w-full overflow-hidden rounded-full bg-muted"
@@ -157,6 +150,18 @@ export function Codex({
 								<p className="text-xs text-muted-foreground tabular-nums">
 									{formatOdds(entry.odds)}
 								</p>
+								{entry.solvedMix && (
+									<Button
+										variant="outline"
+										size="sm"
+										className="mt-auto self-end"
+										onClick={() => entry.solvedMix && onUseMix(entry.solvedMix)}
+										aria-label={`Add ${entry.name} combination to bench`}
+									>
+										<FlaskConical className="size-3.5" aria-hidden="true" />
+										Add to bench
+									</Button>
+								)}
 							</div>
 							{entry.crafterGates.length > 0 && (
 								<div className="space-y-1 border-t border-destructive/20 pt-2 text-xs text-destructive sm:col-span-2">
