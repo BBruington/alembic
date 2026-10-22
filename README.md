@@ -6,6 +6,12 @@ This is the Casper Studios take-home sandbox. Ingredients are unlimited, every b
 
 Live: https://alembic-six.vercel.app
 
+## Status
+
+What works: sign-in, the workshop bootstrap, the brew bench with server-side resolution of every outcome-table cell (force any degree with the table d20), the result card, the codex with saved combinations and **Add to bench**, ingredient search and favourites, the brew log, the crafter edit sheet, Viewing as GM/Player, the GM answer key with potion or formula reveal, and the beginner landing page. `bun test` covers the worked examples in `Brewing rules.md` §12, every outcome cell and the player-view leak test.
+
+What's incomplete: Discord sign-in isn't switched on in the Clerk dashboard yet (GitHub and Google work). The finite ingredient economy, exact-primary matching and real campaign content are deliberately out of scope for this sandbox. Railway had a platform outage during the timebox, so the app is deployed on Vercel instead.
+
 ## The workshop
 
 The workshop starts with Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor). The bench accepts up to four ingredient units, including repeats, and shows the four tradition totals as you mix. You can supply a table d20 or let the server roll it.
@@ -48,7 +54,7 @@ The brewing tests cover the worked examples and outcome rules. The player projec
 
 ## The 60-second tour
 
-1. Sign in with GitHub, Google or Discord. The workshop opens with Wren, the ingredient shelf and Healing Potion (Minor) already Known.
+1. Sign in with GitHub or Google. The workshop opens with Wren, the ingredient shelf and Healing Potion (Minor) already Known.
 2. Follow the mentor's note: add **Heartmoss + Marsh Toad Gland**. Set the table d20 to **6** and brew. The totals are **7/26/1/8**, the DC is **15**, and the result is off by **14**. Arcane and Primal are on; Occult and Divine are low.
 3. Add **Glowcap** to that mix and brew again with d20 **6**. The totals are **7/26/10/13**, a perfect success that makes **1 + 1d3** potions. The codex marks Healing Potion (Minor) Perfected.
 4. Experiment toward the other ten potions. Try **Silverleaf + Ghost Orchid + Moonwell Water** for a blocked brew: Truth Potion is level 6, but Wren is level 5.
