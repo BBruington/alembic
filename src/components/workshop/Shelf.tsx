@@ -1,4 +1,5 @@
-import { Minus, Plus } from "lucide-react";
+import { Minus, Plus, Star, X } from "lucide-react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { type Ingredient, type Mix, TRADITIONS } from "#/brewing/types";
 import { Badge } from "#/components/ui/badge";
 import { Button } from "#/components/ui/button";
@@ -9,7 +10,11 @@ import {
 	CardHeader,
 	CardTitle,
 } from "#/components/ui/card";
+import { Input } from "#/components/ui/input";
+import { Label } from "#/components/ui/label";
+import { ScrollArea } from "#/components/ui/scroll-area";
 import { TRADITION_STYLE } from "#/components/workshop/TraditionBars";
+import { useFavouriteIngredients } from "#/components/workshop/use-favourite-ingredients";
 import { TRADITION_LABEL } from "#/lib/format";
 
 interface ShelfProps {
@@ -20,75 +25,172 @@ interface ShelfProps {
 }
 
 export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
+	const [search, setSearch] = useState("");
+	const { favourites, toggleFavourite } = useFavouriteIngredients();
+	const searchRef = useRef<HTMLInputElement>(null);
+	const toggledStar = useRef<HTMLButtonElement>(null);
+	useEffect(() => {
+		const button = toggledStar.current;
+		if (!button) return;
+		button.focus({ preventScroll: true });
+		button.scrollIntoView({ block: "nearest" });
+		toggledStar.current = null;
+	});
+	const query = search.trim().toLowerCase();
+	const matches = ingredients
+		.filter((ingredient) =>
+			[
+				ingredient.name,
+				ingredient.type,
+				ingredient.form,
+				ingredient.biome,
+				ingredient.rarity,
+			].some((value) => value.toLowerCase().includes(query)),
+		)
+		.sort(
+			(left, right) =>
+				Number(favourites.includes(right.id)) -
+				Number(favourites.includes(left.id)),
+		);
+	const hasFavourites = matches.some((ingredient) =>
+		favourites.includes(ingredient.id),
+	);
 	return (
-		<Card className="ingredient-shelf gap-3 shadow-none">
+		<Card className="ingredient-shelf gap-4 py-4 shadow-none">
 			<CardHeader>
 				<div className="flex flex-wrap items-baseline justify-between gap-2">
 					<CardTitle className="text-lg">Ingredients</CardTitle>
 					<span className="text-xs text-muted-foreground">
-						{ingredients.length} available · Unlimited supply
+						{matches.length} of {ingredients.length} · Unlimited supply
 					</span>
 				</div>
-				<CardDescription>
-					Choose up to four units. Repeats welcome.
-				</CardDescription>
+				<CardDescription>Choose up to four units.</CardDescription>
+				<div className="mt-3 flex items-center gap-2">
+					<Label htmlFor="ingredient-search" className="sr-only">
+						Search ingredients
+					</Label>
+					<Input
+						id="ingredient-search"
+						ref={searchRef}
+						type="search"
+						placeholder="Search ingredients…"
+						value={search}
+						onChange={(event) => setSearch(event.target.value)}
+					/>
+					{search && (
+						<Button
+							type="button"
+							size="icon"
+							variant="ghost"
+							aria-label="Clear search"
+							onClick={() => {
+								setSearch("");
+								searchRef.current?.focus();
+							}}
+						>
+							<X className="size-4" />
+						</Button>
+					)}
+				</div>
 			</CardHeader>
-			<CardContent className="ingredient-grid">
-				{ingredients.map((ingredient) => (
-					<div
-						key={ingredient.id}
-						className={`ingredient-item ${mix[ingredient.id] ? "ingredient-selected" : ""}`}
-					>
-						<div className="flex items-start justify-between gap-1">
-							<h3 className="text-sm font-semibold">{ingredient.name}</h3>
-							<Badge
-								variant="outline"
-								className="ingredient-rarity text-xs capitalize"
-							>
-								{ingredient.rarity}
-							</Badge>
-						</div>
-						<div className="mt-2 flex items-center justify-between gap-2">
-							<p className="text-[0.6875rem] capitalize text-muted-foreground">
-								{ingredient.type} · {ingredient.form} · {ingredient.biome}
-							</p>
-							<div className="ingredient-controls flex shrink-0 items-center gap-1">
-								<Button
-									size="icon-sm"
-									variant="outline"
-									aria-label={`Remove ${ingredient.name}`}
-									disabled={!mix[ingredient.id]}
-									onClick={() => onChange(ingredient.id, -1)}
-								>
-									<Minus className="size-3" />
-								</Button>
-								<span className="w-4 text-center font-mono text-xs tabular-nums">
-									{mix[ingredient.id] ?? 0}
-								</span>
-								<Button
-									size="icon-sm"
-									variant="outline"
-									aria-label={`Add ${ingredient.name}`}
-									disabled={units >= 4}
-									onClick={() => onChange(ingredient.id, 1)}
-								>
-									<Plus className="size-3" />
-								</Button>
-							</div>
-						</div>
-						<div className="mt-2 grid grid-cols-4 gap-1">
-							{TRADITIONS.map((tradition, index) => (
-								<span
-									key={tradition}
-									title={TRADITION_LABEL[tradition]}
-									className={`whitespace-nowrap font-mono text-xs tabular-nums ${TRADITION_STYLE[tradition].text}`}
-								>
-									{TRADITION_LABEL[tradition][0]} {ingredient.values[index]}
-								</span>
-							))}
-						</div>
-					</div>
-				))}
+			<CardContent className="px-0">
+				<ScrollArea className="ingredient-list">
+					{matches.length === 0 ? (
+						<p className="px-6 py-12 text-center text-sm text-muted-foreground">
+							No ingredients match “{search}”. Try another name or clear your
+							search.
+						</p>
+					) : (
+						matches.map((ingredient, index) => {
+							const favourite = favourites.includes(ingredient.id);
+							const groupStart =
+								index === 0 ||
+								favourite !== favourites.includes(matches[index - 1].id);
+							return (
+								<Fragment key={ingredient.id}>
+									{hasFavourites && groupStart && (
+										<p className="ingredient-group">
+											{favourite ? "Favourites" : "Catalogue"}
+										</p>
+									)}
+									<div
+										className={`ingredient-row ${mix[ingredient.id] ? "ingredient-selected" : ""}`}
+									>
+										<Button
+											type="button"
+											size="icon-sm"
+											variant="ghost"
+											aria-label={`Favourite ${ingredient.name}`}
+											aria-pressed={favourite}
+											onClick={(event) => {
+												toggledStar.current = event.currentTarget;
+												toggleFavourite(ingredient.id);
+											}}
+										>
+											<Star
+												className={`size-4 ${favourite ? "fill-primary text-primary" : "text-muted-foreground"}`}
+											/>
+										</Button>
+										<div className="ingredient-detail min-w-0">
+											<div className="flex flex-wrap items-center gap-2">
+												<h3 className="text-sm font-semibold">
+													{ingredient.name}
+												</h3>
+												<Badge variant="outline" className="text-xs capitalize">
+													{ingredient.rarity}
+												</Badge>
+											</div>
+											<p className="mt-1 text-xs capitalize text-muted-foreground">
+												{ingredient.type} · {ingredient.form} ·{" "}
+												{ingredient.biome}
+											</p>
+										</div>
+										<div className="ingredient-values grid grid-cols-4 gap-3">
+											{TRADITIONS.map((tradition, axis) => (
+												<div
+													key={tradition}
+													className={TRADITION_STYLE[tradition].text}
+												>
+													<p className="text-[0.6875rem]">
+														{TRADITION_LABEL[tradition]}
+													</p>
+													<p className="mt-1 font-mono text-sm tabular-nums">
+														{ingredient.values[axis]}
+													</p>
+												</div>
+											))}
+										</div>
+										<div className="ingredient-controls flex items-center gap-1">
+											<Button
+												type="button"
+												size="icon-sm"
+												variant="outline"
+												aria-label={`Remove ${ingredient.name}`}
+												disabled={!mix[ingredient.id]}
+												onClick={() => onChange(ingredient.id, -1)}
+											>
+												<Minus className="size-3" />
+											</Button>
+											<span className="w-4 text-center font-mono text-xs tabular-nums">
+												{mix[ingredient.id] ?? 0}
+											</span>
+											<Button
+												type="button"
+												size="icon-sm"
+												variant="outline"
+												aria-label={`Add ${ingredient.name}`}
+												disabled={units >= 4}
+												onClick={() => onChange(ingredient.id, 1)}
+											>
+												<Plus className="size-3" />
+											</Button>
+										</div>
+									</div>
+								</Fragment>
+							);
+						})
+					)}
+				</ScrollArea>
 			</CardContent>
 		</Card>
 	);
