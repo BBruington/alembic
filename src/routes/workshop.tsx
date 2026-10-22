@@ -8,6 +8,11 @@ import type { BrewView, Mix } from "#/brewing/types";
 import { HouseRules } from "#/components/HouseRules";
 import { Button } from "#/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "#/components/ui/tooltip";
 import { AnswerKey } from "#/components/workshop/AnswerKey";
 import { BrewBench } from "#/components/workshop/BrewBench";
 import { BrewLog } from "#/components/workshop/BrewLog";
@@ -106,12 +111,20 @@ function Workshop() {
 			<div className="workshop-heading">
 				<h1 className="text-2xl font-semibold tracking-tight">The workshop</h1>
 				<div className="flex flex-wrap items-center gap-3">
-					<Button asChild variant="ghost" size="sm">
-						<Link to="/" hash="first-brew">
-							<CircleHelp className="size-4" aria-hidden="true" />
-							New here? How brewing works
-						</Link>
-					</Button>
+					<Tooltip>
+						<TooltipTrigger asChild>
+							<Button asChild variant="ghost" size="icon">
+								<Link
+									to="/"
+									hash="first-brew"
+									aria-label="Learn how brewing works"
+								>
+									<CircleHelp className="size-4" aria-hidden="true" />
+								</Link>
+							</Button>
+						</TooltipTrigger>
+						<TooltipContent>Learn how brewing works</TooltipContent>
+					</Tooltip>
 					<ViewingToggle viewingAs={view.viewingAs} isGm={view.isGm} />
 				</div>
 			</div>
