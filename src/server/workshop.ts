@@ -15,6 +15,10 @@ import type { BrewAttempt, CrafterEdit } from "#/orpc/schema";
 import { toCrafterView, toWorkshopView } from "./projection";
 
 export async function bootstrap(userId: string) {
+	const existing = await db.query.campaigns.findFirst({
+		where: eq(campaigns.gmUserId, userId),
+	});
+	if (existing) return existing;
 	return db.transaction(async (tx) => {
 		await tx
 			.insert(campaigns)

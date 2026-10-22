@@ -15,18 +15,17 @@ export function ViewingToggle({
 	const queryClient = useQueryClient();
 	const mutation = useMutation(
 		orpc.viewing.set.mutationOptions({
-			onSuccess: async (_, input) => {
-				await Promise.all([
-					queryClient.invalidateQueries({ queryKey: orpc.workshop.key() }),
-					queryClient.invalidateQueries({
-						queryKey: orpc.gm.key(),
-						refetchType: input.as === "gm" ? "active" : "none",
-					}),
-				]);
+			onSuccess: ({ viewingAs: next }) => {
+				queryClient.setQueryData(orpc.workshop.get.queryKey(), (current) =>
+					current ? { ...current, viewingAs: next } : current,
+				);
+				if (next === "gm")
+					return queryClient.invalidateQueries({ queryKey: orpc.gm.key() });
 			},
 			onError: (error) => toast.error(error.message),
 		}),
 	);
+	const shown = mutation.isPending ? mutation.variables.as : viewingAs;
 	return (
 		<div className="flex flex-wrap items-center gap-2 text-sm">
 			<span
@@ -41,8 +40,8 @@ export function ViewingToggle({
 					<Button
 						type="button"
 						size="sm"
-						variant={viewingAs === "gm" ? "default" : "ghost"}
-						aria-pressed={viewingAs === "gm"}
+						variant={shown === "gm" ? "default" : "ghost"}
+						aria-pressed={shown === "gm"}
 						disabled={mutation.isPending}
 						onClick={() => mutation.mutate({ as: "gm" })}
 					>
@@ -53,8 +52,8 @@ export function ViewingToggle({
 				<Button
 					type="button"
 					size="sm"
-					variant={viewingAs === "player" ? "default" : "ghost"}
-					aria-pressed={viewingAs === "player"}
+					variant={shown === "player" ? "default" : "ghost"}
+					aria-pressed={shown === "player"}
 					disabled={mutation.isPending}
 					onClick={() => mutation.mutate({ as: "player" })}
 				>
