@@ -38,7 +38,7 @@ export function TraditionBars({ values }: { values: Values }) {
 					</div>
 					<div className="h-2 overflow-hidden rounded-full bg-muted">
 						<div
-							className={`h-full rounded-full transition-all ${TRADITION_STYLE[tradition].bar}`}
+							className={`h-full rounded-full transition-[width] ${TRADITION_STYLE[tradition].bar}`}
 							style={{ width: `${Math.min((values[index] / 45) * 100, 100)}%` }}
 						/>
 					</div>

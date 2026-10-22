@@ -41,7 +41,7 @@ export function BrewLog({
 	return (
 		<Card className="gap-4">
 			<CardHeader>
-				<CardTitle className="font-serif text-2xl">Brew log</CardTitle>
+				<CardTitle>Brew log</CardTitle>
 				<CardDescription>
 					Your experiments, newest first. Totals are Arcane / Primal / Occult /
 					Divine.

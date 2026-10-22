@@ -12,10 +12,6 @@ Brewing resolves on the server, including ingredient and crafter gates, PF2e deg
 
 Clerk handles sign-in and Neon stores each account's workshop. This sandbox deliberately uses a Clerk development instance, so its development badge, accounts.dev redirect and OAuth branding are expected. There's no guest sign-in.
 
-## Incomplete
-
-The live deployment is currently blocked by [Railway's platform incident](https://status.railway.com/): project creation returns “Deploys have been paused temporarily”. There is no deployed URL yet. Final verification and any remaining limitations will be recorded here before submission.
-
 ## Run locally
 
 You'll need Bun and a Neon database. Create `.env.local` in the project root:
@@ -56,39 +52,28 @@ The brewing tests cover the worked examples and outcome rules. The player projec
 4. Experiment toward the other ten potions. Try **Silverleaf + Ghost Orchid + Moonwell Water** for a blocked brew: Truth Potion is level 6, but Wren is level 5.
 5. Switch **Viewing as** to **GM**. The answer key shows every target and perfect recipe. Reveal **Invisibility Potion**, then return to Player view. Its codex entry is Known, with its name, rarity, DC and odds, but no target.
 
-## Deploy to Railway
+## Deploy to Vercel
 
-`railway.json` uses Railpack, runs `bun run build`, starts the generated Nitro server with `bun run start` (`node .output/server/index.mjs`), and checks `/`. Railway supplies `PORT`.
+Nitro detects Vercel's `VERCEL=1` environment variable and builds `.vercel/output`, including static assets and the serverless function. Outside Vercel, `bun run build` keeps the Node server output used by `bun run start`. Neither output directory belongs in source control.
 
-Create and link the `alembic` project and service with the authenticated Railway CLI:
-
-```bash
-railway init --name alembic
-railway add --service alembic
-railway service link alembic
-```
-
-Set all five variables shown above on the service before deploying. Railway service variables are available during both the build and runtime; the `VITE_` values must exist during the build because Vite embeds them in the client assets. Keep `.env.local` out of uploads and source control. Push the Neon schema once with `bun run db:push` using the deployment database URL.
+With the Vercel CLI installed and authenticated, deploy from the project root:
 
 ```bash
-railway up --service alembic --environment production --detach
-railway domain --service alembic
+bash scripts/vercel-deploy.sh
 ```
 
-Redeploy from this linked directory with:
+The script links the `alembic` project, pipes all five variables from `.env.local` into Vercel's production environment, then runs `vercel deploy --prod`. It doesn't print their values or put secrets in command arguments. Existing production values are replaced. Vercel makes these variables available at build time and runtime; the `VITE_` values must exist during the build because Vite embeds them in the client assets. Keep `.env.local` out of uploads and source control. Push the Neon schema once with `bun run db:push` using the deployment database URL.
+
+Linking also lets the CLI refresh its `VERCEL_OIDC_TOKEN` entry in `.env.local`; that file stays local.
+
+For a local production check, build without `VERCEL` set and load `.env.local` before starting Node:
 
 ```bash
-railway up --service alembic --environment production --detach
+bun run build
+PORT=3001 node -e 'require("dotenv").config({path:".env.local",override:true,quiet:true});import("./.output/server/index.mjs")'
 ```
 
-For a local production check, run `bun run build`, then start with the variables from `.env.local` loaded into the environment. Node doesn't load `.env.local` automatically:
-
-```bash
-set -a
-. ./.env.local
-set +a
-bun run start
-```
+Open **http://localhost:3001**. With those environment variables already exported, `bun run start` runs the same server.
 
 ## Licence and content
 

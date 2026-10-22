@@ -45,11 +45,9 @@ export function AnswerKey() {
 	return (
 		<Card className="border-occult/40 bg-occult/5">
 			<CardHeader>
-				<CardTitle>
-					<h2 className="flex items-center gap-2 font-serif text-xl text-occult">
-						<Shield className="size-5" />
-						Answer key — GM eyes only
-					</h2>
+				<CardTitle className="flex items-center gap-2 text-occult">
+					<Shield className="size-5 shrink-0" aria-hidden="true" />
+					Answer key — GM eyes only
 				</CardTitle>
 				<CardDescription>
 					Hidden targets and perfect recipes. Reveal a potion's name to the

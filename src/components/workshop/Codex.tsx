@@ -14,11 +14,12 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 	return (
 		<Card className="h-fit">
 			<CardHeader>
-				<CardTitle>
-					<h2 className="flex items-center gap-2 font-serif text-xl">
-						<BookOpen className="size-5 text-primary" />
-						Potion codex
-					</h2>
+				<CardTitle className="flex items-center gap-2">
+					<BookOpen
+						className="size-5 shrink-0 text-primary"
+						aria-hidden="true"
+					/>
+					Potion codex
 				</CardTitle>
 				<CardDescription>
 					{workshop.codex.length} known · {workshop.undiscoveredCount}{" "}

@@ -17,8 +17,8 @@ export function ResultCard({
 	return (
 		<Card className="gap-4">
 			<CardHeader>
-				<CardTitle className="flex items-center gap-2 font-serif text-xl">
-					<FlaskConical className="size-5" />
+				<CardTitle className="flex items-center gap-2">
+					<FlaskConical className="size-5 shrink-0" aria-hidden="true" />
 					{result.kind === "inert" ? "The mix stays inert" : potionName}
 				</CardTitle>
 			</CardHeader>

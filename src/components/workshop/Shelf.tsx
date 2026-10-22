@@ -23,7 +23,7 @@ export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
 	return (
 		<Card className="min-w-0 gap-4">
 			<CardHeader>
-				<CardTitle className="font-serif text-2xl">Ingredient shelf</CardTitle>
+				<CardTitle>Ingredient shelf</CardTitle>
 				<CardDescription>
 					{ingredients.length} ingredients. Unlimited supply. Choose up to four
 					units.
@@ -33,11 +33,11 @@ export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
 				{ingredients.map((ingredient) => (
 					<div
 						key={ingredient.id}
-						className="border-b pb-4 last:border-0 last:pb-0"
+						className={`border-b pb-4 last:border-0 last:pb-0 ${mix[ingredient.id] ? "border-primary/50" : ""}`}
 					>
 						<div className="flex flex-wrap items-center gap-2">
 							<h3 className="text-sm font-semibold">{ingredient.name}</h3>
-							<Badge variant="outline" className="text-[10px] capitalize">
+							<Badge variant="outline" className="text-xs capitalize">
 								{ingredient.rarity}
 							</Badge>
 						</div>
@@ -50,7 +50,7 @@ export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
 									<span
 										key={tradition}
 										title={TRADITION_LABEL[tradition]}
-										className={`rounded px-1.5 py-1 font-mono text-[10px] ${TRADITION_STYLE[tradition].chip}`}
+										className={`rounded px-1.5 py-1 font-mono text-xs tabular-nums ${TRADITION_STYLE[tradition].chip}`}
 									>
 										{TRADITION_LABEL[tradition][0]} {ingredient.values[index]}
 									</span>
@@ -66,7 +66,7 @@ export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
 								>
 									<Minus className="size-3" />
 								</Button>
-								<span className="w-4 text-center font-mono text-xs">
+								<span className="w-4 text-center font-mono text-xs tabular-nums">
 									{mix[ingredient.id] ?? 0}
 								</span>
 								<Button

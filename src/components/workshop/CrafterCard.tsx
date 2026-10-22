@@ -7,7 +7,7 @@ import { CrafterSheet, TOOL_LABELS } from "#/components/workshop/CrafterSheet";
 export function CrafterCard({ crafter }: { crafter: CrafterView }) {
 	return (
 		<Card className="gap-0 py-4">
-			<CardContent className="flex flex-wrap items-center justify-between gap-4 px-4">
+			<CardContent className="flex flex-wrap items-center justify-between gap-4 px-4 sm:px-4">
 				<div className="flex items-center gap-3">
 					<div className="flex size-11 items-center justify-center rounded-full bg-primal/15 text-primal">
 						<FlaskConical className="size-5" />

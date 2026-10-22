@@ -52,7 +52,7 @@ export function BrewBench({
 		<Card className="gap-5">
 			<CardHeader>
 				<div className="flex items-center justify-between gap-3">
-					<CardTitle className="font-serif text-2xl">Brew bench</CardTitle>
+					<CardTitle>Brew bench</CardTitle>
 					<span className="font-mono text-xs text-muted-foreground">
 						{units} / 4 units
 					</span>
