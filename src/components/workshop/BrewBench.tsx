@@ -70,7 +70,7 @@ export function BrewBench({
 					Measure the traditions. Follow what the mixture tells you.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="space-y-4">
+			<CardContent className="space-y-4" inert={previewing}>
 				<div className="min-h-16 space-y-2">
 					{selected.length === 0 ? (
 						<p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
