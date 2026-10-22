@@ -29,7 +29,12 @@ export function ViewingToggle({
 	);
 	return (
 		<div className="flex flex-wrap items-center gap-2 text-sm">
-			<span className="text-muted-foreground">Viewing as:</span>
+			<span
+				aria-hidden="true"
+				className="hidden text-muted-foreground sm:inline"
+			>
+				Viewing as:
+			</span>
 			<fieldset className="flex gap-1 rounded-lg border bg-muted/40 p-1">
 				<legend className="sr-only">Viewing as</legend>
 				{isGm && (
@@ -41,7 +46,7 @@ export function ViewingToggle({
 						disabled={mutation.isPending}
 						onClick={() => mutation.mutate({ as: "gm" })}
 					>
-						<Shield className="size-3.5" />
+						<Shield className="hidden size-3.5 sm:block" />
 						GM
 					</Button>
 				)}
@@ -53,7 +58,7 @@ export function ViewingToggle({
 					disabled={mutation.isPending}
 					onClick={() => mutation.mutate({ as: "player" })}
 				>
-					<Eye className="size-3.5" />
+					<Eye className="hidden size-3.5 sm:block" />
 					Player
 				</Button>
 			</fieldset>

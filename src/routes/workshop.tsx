@@ -6,6 +6,7 @@ import { useState } from "react";
 import type { BrewView, Mix } from "#/brewing/types";
 import { HouseRules } from "#/components/HouseRules";
 import { Button } from "#/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "#/components/ui/tabs";
 import { AnswerKey } from "#/components/workshop/AnswerKey";
 import { BrewBench } from "#/components/workshop/BrewBench";
 import { BrewLog } from "#/components/workshop/BrewLog";
@@ -76,29 +77,46 @@ function Workshop() {
 			</main>
 		);
 	const view = workshop.data;
+	const mentorNote = view.codex.find(
+		(entry) => entry.source === "mentor",
+	)?.note;
 
 	return (
-		<main className="mx-auto w-full max-w-[1600px] space-y-6 px-4 py-8 sm:px-6">
-			<div className="flex flex-wrap items-end justify-between gap-4">
-				<div>
-					<h1 className="font-serif text-3xl tracking-tight sm:text-4xl">
-						The workshop
-					</h1>
-					<p className="mt-2 text-sm text-muted-foreground">
-						A little measurement. A little mystery. A discovery worth bottling.
-					</p>
-				</div>
+		<main className="workshop-layout page-wrap">
+			<div className="workshop-heading">
+				<h1 className="text-2xl font-semibold tracking-tight">The workshop</h1>
 				<ViewingToggle viewingAs={view.viewingAs} isGm={view.isGm} />
 			</div>
 			<CrafterCard crafter={view.crafter} />
-			<div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] xl:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)_minmax(0,1fr)]">
-				<Shelf
-					ingredients={view.ingredients}
-					mix={mix}
-					units={units}
-					onChange={changeIngredient}
-				/>
-				<div className="space-y-5">
+			<div className="workshop-workspace">
+				<div className="workshop-library" id="ingredients">
+					<Shelf
+						ingredients={view.ingredients}
+						mix={mix}
+						units={units}
+						onChange={changeIngredient}
+					/>
+					<Tabs defaultValue="codex" className="mt-5">
+						<TabsList variant="line" aria-label="Workshop records">
+							<TabsTrigger value="codex">Potion codex</TabsTrigger>
+							<TabsTrigger value="log">
+								Brew log · {view.log.length}
+							</TabsTrigger>
+						</TabsList>
+						<TabsContent value="codex">
+							<Codex workshop={view} />
+						</TabsContent>
+						<TabsContent value="log">
+							<BrewLog log={view.log} ingredients={view.ingredients} />
+						</TabsContent>
+					</Tabs>
+				</div>
+				<div className="workshop-bench" id="brew-bench">
+					{mentorNote && (
+						<p className="rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
+							<span className="font-semibold">Mentor's note:</span> {mentorNote}
+						</p>
+					)}
 					<BrewBench
 						ingredients={view.ingredients}
 						mix={mix}
@@ -114,14 +132,20 @@ function Workshop() {
 					<div aria-live="polite">
 						<ResultCard result={result} crafterName={view.crafter.name} />
 					</div>
-				</div>
-				<div className="lg:col-span-2 xl:col-span-1">
-					<Codex workshop={view} />
+					<a
+						href="#ingredients"
+						className="bench-mobile-link text-sm text-primary underline underline-offset-4"
+					>
+						Choose ingredients ↓
+					</a>
 				</div>
 			</div>
 			{view.viewingAs === "gm" && <AnswerKey />}
-			<BrewLog log={view.log} ingredients={view.ingredients} />
 			<HouseRules />
+			<a href="#brew-bench" className="mobile-bench-shortcut">
+				<span>Brew bench</span>
+				<span>{units} / 4 units · Review mix ↑</span>
+			</a>
 		</main>
 	);
 }

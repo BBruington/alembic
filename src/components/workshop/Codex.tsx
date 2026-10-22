@@ -12,21 +12,21 @@ import { formatGate, formatOdds } from "#/lib/format";
 
 export function Codex({ workshop }: { workshop: WorkshopView }) {
 	return (
-		<Card className="h-fit">
-			<CardHeader>
-				<CardTitle className="flex items-center gap-2">
+		<Card className="h-fit gap-0 rounded-lg py-0 shadow-none">
+			<CardHeader className="gap-1 border-b px-4 py-3 sm:px-4 [.border-b]:pb-3">
+				<CardTitle className="flex items-center gap-2 text-lg">
 					<BookOpen
-						className="size-5 shrink-0 text-primary"
+						className="size-4 shrink-0 text-muted-foreground"
 						aria-hidden="true"
 					/>
 					Potion codex
 				</CardTitle>
-				<CardDescription>
+				<CardDescription className="text-xs tabular-nums">
 					{workshop.codex.length} known · {workshop.undiscoveredCount}{" "}
 					undiscovered
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="space-y-5">
+			<CardContent className="px-0 sm:px-0">
 				{workshop.codex.map((entry) => {
 					const segments = [
 						{
@@ -45,35 +45,58 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 					return (
 						<article
 							key={entry.potionId}
-							className="space-y-3 border-b pb-5 last:border-0 last:pb-0"
+							className="grid gap-2 border-b px-4 py-3 last:border-0 sm:grid-cols-[minmax(0,1fr)_minmax(9rem,0.7fr)] sm:gap-x-5"
 						>
-							<div className="flex flex-wrap items-start justify-between gap-2">
-								<h3 className="font-medium">{entry.name}</h3>
-								<Badge
-									variant="outline"
-									className={
-										entry.rarity === "rare"
-											? "text-occult"
-											: entry.rarity === "uncommon"
-												? "text-arcane"
-												: "text-muted-foreground"
-									}
-								>
-									{entry.rarity}
-								</Badge>
-							</div>
-							<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-								<span>Level {entry.level}</span>
-								<span>DC {entry.dc}</span>
-								{entry.perfected && (
-									<Badge variant="secondary" className="gap-1 text-primal">
-										<Check className="size-3" />
-										Perfected
+							<div className="min-w-0 space-y-1.5">
+								<div className="flex flex-wrap items-center gap-2">
+									<h3 className="text-sm font-semibold">{entry.name}</h3>
+									<Badge
+										variant="outline"
+										className={
+											entry.rarity === "rare"
+												? "text-occult"
+												: entry.rarity === "uncommon"
+													? "text-arcane"
+													: "text-muted-foreground"
+										}
+									>
+										{entry.rarity}
 									</Badge>
+								</div>
+								<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+									<span>Level {entry.level}</span>
+									<span>DC {entry.dc}</span>
+									{entry.perfected && (
+										<Badge variant="secondary" className="gap-1 text-primal">
+											<Check className="size-3" aria-hidden="true" />
+											Perfected
+										</Badge>
+									)}
+								</div>
+								<p className="text-xs text-muted-foreground">
+									Best off-by:{" "}
+									<span className="font-medium text-foreground tabular-nums">
+										{entry.bestOffBy ?? "Not brewed yet"}
+									</span>
+								</p>
+								{entry.source === "mentor" && entry.note && (
+									<p className="text-xs text-muted-foreground">
+										Mentor's note: {entry.note}
+									</p>
+								)}
+								{entry.source === "revealed" && (
+									<p className="text-xs text-muted-foreground">
+										Revealed by GM
+									</p>
+								)}
+								{entry.source === "brewed" && (
+									<p className="text-xs text-muted-foreground">
+										Discovered at the bench
+									</p>
 								)}
 							</div>
 							<div className="space-y-1.5">
-								<p className="text-sm tabular-nums">
+								<p className="text-xs font-medium tabular-nums">
 									≥ success{" "}
 									{Math.round(
 										(entry.odds.criticalSuccess + entry.odds.success) * 100,
@@ -81,9 +104,8 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 									%
 								</p>
 								<div
-									className="flex h-1.5 w-full overflow-hidden rounded-full bg-muted"
-									role="img"
-									aria-label={formatOdds(entry.odds)}
+									className="flex h-1 w-full overflow-hidden rounded-full bg-muted"
+									aria-hidden="true"
 								>
 									{segments.map((segment) => (
 										<span
@@ -94,31 +116,12 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 										/>
 									))}
 								</div>
-								<p className="text-xs text-muted-foreground">
-									Crit / success / fail / crit-fail
+								<p className="text-xs text-muted-foreground tabular-nums">
+									{formatOdds(entry.odds)}
 								</p>
 							</div>
-							<p className="text-sm text-muted-foreground">
-								Best off-by:{" "}
-								<span className="font-medium text-foreground tabular-nums">
-									{entry.bestOffBy ?? "Not brewed yet"}
-								</span>
-							</p>
-							{entry.source === "mentor" && entry.note && (
-								<p className="text-sm italic text-muted-foreground">
-									Mentor's note: {entry.note}
-								</p>
-							)}
-							{entry.source === "revealed" && (
-								<Badge variant="outline">Revealed by GM</Badge>
-							)}
-							{entry.source === "brewed" && (
-								<p className="text-xs text-muted-foreground">
-									Discovered at the bench
-								</p>
-							)}
 							{entry.crafterGates.length > 0 && (
-								<div className="space-y-1 rounded-md bg-destructive/10 p-2 text-xs text-destructive">
+								<div className="space-y-1 border-t border-destructive/20 pt-2 text-xs text-destructive sm:col-span-2">
 									<p className="font-medium">
 										Beyond {workshop.crafter.name.split(" ")[0]}
 									</p>
@@ -133,12 +136,13 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 					);
 				})}
 				{workshop.undiscoveredCount > 0 && (
-					<div className="space-y-3">
-						<p className="text-sm text-muted-foreground">
+					<div className="space-y-2 border-t px-4 py-3">
+						<p className="flex items-center gap-2 text-xs text-muted-foreground">
+							<LockKeyhole className="size-3.5" aria-hidden="true" />
 							{workshop.undiscoveredCount} undiscovered
 						</p>
 						<ul
-							className="grid grid-cols-5 gap-2"
+							className="flex flex-wrap gap-1"
 							aria-label={`${workshop.undiscoveredCount} undiscovered potion slots`}
 						>
 							{Array.from(
@@ -147,9 +151,8 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 							).map((slot) => (
 								<li
 									key={slot}
-									className="flex aspect-square items-center justify-center rounded-md border border-dashed bg-muted/20 text-muted-foreground/60"
+									className="size-3 rounded-sm border border-dashed border-muted-foreground/50"
 								>
-									<LockKeyhole className="size-4" aria-hidden="true" />
 									<span className="sr-only">{slot}</span>
 								</li>
 							))}

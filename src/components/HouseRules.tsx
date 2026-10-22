@@ -10,20 +10,17 @@ const HOUSE_RULES = [
 
 export function HouseRules() {
 	return (
-		<section
-			aria-labelledby="house-rules-heading"
-			className="parchment rounded-xl p-6 sm:p-8"
-		>
-			<h2 id="house-rules-heading" className="text-2xl">
-				The house rules
-			</h2>
-			<ol className="mt-5 grid list-decimal gap-x-10 gap-y-3 pl-5 text-sm leading-relaxed marker:font-semibold sm:grid-cols-2">
+		<details open className="border-y py-4">
+			<summary className="cursor-pointer text-sm font-semibold">
+				<h2 className="inline text-sm font-semibold">The house rules</h2>
+			</summary>
+			<ol className="mt-4 grid list-decimal gap-x-10 gap-y-2 pl-5 text-sm leading-relaxed text-muted-foreground marker:font-semibold sm:grid-cols-2">
 				{HOUSE_RULES.map((rule) => (
 					<li key={rule} className="pl-1">
 						{rule}
 					</li>
 				))}
 			</ol>
-		</section>
+		</details>
 	);
 }

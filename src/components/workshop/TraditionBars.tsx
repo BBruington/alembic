@@ -29,19 +29,25 @@ export const TRADITION_STYLE: Record<
 
 export function TraditionBars({ values }: { values: Values }) {
 	return (
-		<section className="space-y-3" aria-label="Live tradition totals">
+		<section className="space-y-2.5" aria-label="Live tradition totals">
 			{TRADITIONS.map((tradition, index) => (
-				<div key={tradition}>
-					<div className="mb-1 flex justify-between text-xs">
-						<span>{TRADITION_LABEL[tradition]}</span>
-						<span className="font-mono tabular-nums">{values[index]}</span>
-					</div>
-					<div className="h-2 overflow-hidden rounded-full bg-muted">
+				<div
+					key={tradition}
+					className="grid grid-cols-[3.5rem_minmax(0,1fr)_2rem] items-center gap-3 text-xs"
+				>
+					<span className="font-medium">{TRADITION_LABEL[tradition]}</span>
+					<div
+						className="h-1.5 overflow-hidden rounded-full bg-muted"
+						aria-hidden="true"
+					>
 						<div
-							className={`h-full rounded-full transition-[width] ${TRADITION_STYLE[tradition].bar}`}
+							className={`h-full rounded-full motion-safe:transition-[width] ${TRADITION_STYLE[tradition].bar}`}
 							style={{ width: `${Math.min((values[index] / 45) * 100, 100)}%` }}
 						/>
 					</div>
+					<span className="text-right text-sm font-semibold tabular-nums">
+						{values[index]}
+					</span>
 				</div>
 			))}
 		</section>

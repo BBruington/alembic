@@ -41,7 +41,10 @@
 	--chart-3: var(--occult);
 	--chart-4: var(--divine);
 	--chart-5: var(--destructive);
-	--radius: 0.75rem;
+	--radius: 0.5rem;
+	--workspace-gap: 1.25rem;
+	--bench-width: 25rem;
+	--section-space: 1.5rem;
 	--sidebar: var(--card);
 	--sidebar-foreground: var(--foreground);
 	--sidebar-primary: var(--primary);
@@ -150,6 +153,216 @@
 	min-height: 65vh;
 	place-items: center;
 	padding: 3rem 1rem;
+}
+
+.workshop-layout {
+	padding-block: var(--section-space);
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: var(--workspace-gap);
+}
+
+.workshop-heading {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+
+.workshop-layout h1,
+.workshop-layout h2 {
+	font-family: var(--font-sans);
+}
+
+.workshop-layout [data-slot="card"] {
+	min-width: 0;
+	border-radius: var(--radius);
+}
+
+.crafter-strip {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: 0.75rem 1.5rem;
+	padding-block: 0.75rem;
+	border-block: 1px solid var(--border);
+}
+
+.workshop-workspace {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) var(--bench-width);
+	align-items: start;
+	gap: var(--workspace-gap);
+}
+
+.workshop-library {
+	min-width: 0;
+}
+
+.workshop-bench {
+	display: grid;
+	gap: 1rem;
+	position: sticky;
+	top: 1rem;
+	scroll-margin-top: 1rem;
+	max-height: calc(100dvh - 2rem);
+	overflow-y: auto;
+}
+
+.ingredient-shelf {
+	padding-block: 1rem;
+	background: transparent;
+	border-color: transparent;
+}
+
+.ingredient-grid {
+	display: grid;
+	grid-template-columns: repeat(4, minmax(0, 1fr));
+	gap: 0;
+}
+
+.ingredient-item {
+	padding: 0.75rem;
+	border: 1px solid var(--border);
+	margin: -1px 0 0 -1px;
+	background: var(--card);
+}
+
+.ingredient-item h3 {
+	font-size: 0.8125rem;
+	line-height: 1.4;
+}
+
+.ingredient-item p {
+	font-size: 0.6875rem;
+}
+
+.ingredient-rarity {
+	border: 0;
+	padding: 0;
+	font-size: 0.625rem;
+	color: var(--muted-foreground);
+}
+
+.ingredient-selected {
+	background: color-mix(in srgb, var(--primary) 10%, var(--card));
+	box-shadow: inset 0 0 0 1px var(--primary);
+	position: relative;
+}
+
+
+.bench-mobile-link,
+.mobile-bench-shortcut {
+	display: none;
+}
+
+.brew-log-region {
+	container-type: inline-size;
+}
+
+@container (max-width: 639px) {
+	.brew-log-table {
+		min-width: 0;
+	}
+	.brew-log-table thead {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		overflow: hidden;
+		clip-path: inset(50%);
+	}
+	.brew-log-table tbody tr {
+		display: grid;
+		padding-block: 0.75rem;
+	}
+	.brew-log-table tbody th,
+	.brew-log-table tbody td {
+		min-width: 0;
+		padding-block: 0.375rem;
+		white-space: normal;
+	}
+	.brew-log-table td[data-label]::before {
+		content: attr(data-label) ": ";
+		font-family: var(--font-sans);
+	}
+}
+
+@media (max-width: 1279px) {
+	.ingredient-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	:root {
+		--bench-width: 23rem;
+	}
+}
+
+@media (max-width: 959px) {
+	.workshop-workspace {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.workshop-bench {
+		position: static;
+		max-height: none;
+		overflow: visible;
+		grid-row: 1;
+	}
+	.ingredient-grid {
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+	}
+	.bench-mobile-link {
+		display: block;
+	}
+}
+
+@media (max-width: 639px) {
+	body:has(.mobile-bench-shortcut) footer {
+		padding-bottom: 6rem;
+	}
+	.workshop-layout {
+		padding-bottom: 5rem;
+	}
+	.workshop-heading {
+		align-items: flex-start;
+	}
+	.workshop-heading h1 {
+		font-size: 1.25rem;
+	}
+	.crafter-strip {
+		align-items: flex-start;
+	}
+	.crafter-tools {
+		width: 100%;
+	}
+	.ingredient-grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.ingredient-item {
+		padding: 0.875rem;
+	}
+	.ingredient-item h3 {
+		font-size: 0.875rem;
+	}
+	.ingredient-item p {
+		font-size: 0.75rem;
+	}
+	.mobile-bench-shortcut {
+		position: fixed;
+		inset: auto 1rem 1rem;
+		z-index: 20;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 1rem;
+		border: 1px solid var(--primary);
+		border-radius: var(--radius);
+		background: var(--primary);
+		color: var(--primary-foreground);
+		font-size: 0.75rem;
+		font-weight: 700;
+		box-shadow: 0 4px 16px color-mix(in srgb, var(--background) 50%, transparent);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {

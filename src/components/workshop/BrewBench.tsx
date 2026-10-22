@@ -49,10 +49,10 @@ export function BrewBench({
 		}
 	}
 	return (
-		<Card className="gap-5">
+		<Card className="gap-4 border-primary/40 shadow-none">
 			<CardHeader>
 				<div className="flex items-center justify-between gap-3">
-					<CardTitle>Brew bench</CardTitle>
+					<CardTitle className="text-lg">Brew bench</CardTitle>
 					<span className="font-mono text-xs text-muted-foreground">
 						{units} / 4 units
 					</span>
@@ -61,11 +61,11 @@ export function BrewBench({
 					Measure the traditions. Follow what the mixture tells you.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="space-y-6">
-				<div className="min-h-24 space-y-3">
+			<CardContent className="space-y-4">
+				<div className="min-h-16 space-y-2">
 					{selected.length === 0 ? (
-						<p className="rounded-lg border border-dashed p-4 text-sm text-muted-foreground">
-							Your vessel is empty. Start with your mentor’s note in the codex.
+						<p className="rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+							Your vessel is empty. Start with your mentor’s note above.
 						</p>
 					) : (
 						selected.map((ingredient) => (
@@ -101,7 +101,7 @@ export function BrewBench({
 					)}
 				</div>
 				<TraditionBars values={totals} />
-				<div className="space-y-2">
+				<div className="space-y-2 border-t pt-4">
 					<Label htmlFor="table-d20">
 						Table d20{" "}
 						<span className="font-normal text-muted-foreground">
@@ -149,7 +149,7 @@ export function BrewBench({
 						Clear
 					</Button>
 				</div>
-				<p className="text-center text-xs text-muted-foreground">
+				<p className="text-xs text-muted-foreground">
 					Every attempt costs one downtime day.
 				</p>
 			</CardContent>

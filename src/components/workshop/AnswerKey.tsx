@@ -43,24 +43,27 @@ export function AnswerKey() {
 		]),
 	);
 	return (
-		<Card className="border-occult/40 bg-occult/5">
-			<CardHeader>
-				<CardTitle className="flex items-center gap-2 text-occult">
-					<Shield className="size-5 shrink-0" aria-hidden="true" />
-					Answer key — GM eyes only
+		<Card className="gap-0 rounded-lg border-occult/30 py-0 shadow-none">
+			<CardHeader className="gap-1 border-b border-occult/20 px-4 py-3 sm:px-4 [.border-b]:pb-3">
+				<CardTitle className="flex items-center gap-2 text-lg">
+					<Shield className="size-4 shrink-0 text-occult" aria-hidden="true" />
+					Answer key
+					<Badge variant="outline" className="font-sans text-occult">
+						GM eyes only
+					</Badge>
 				</CardTitle>
-				<CardDescription>
+				<CardDescription className="text-xs">
 					Hidden targets and perfect recipes. Reveal a potion's name to the
 					player without revealing its formula.
 				</CardDescription>
 			</CardHeader>
-			<CardContent>
+			<CardContent className="px-0 sm:px-0">
 				{answerKey.isPending ? (
-					<output className="text-sm text-muted-foreground">
+					<output className="block px-4 py-4 text-sm text-muted-foreground">
 						Opening the answer key…
 					</output>
 				) : answerKey.isError ? (
-					<div className="flex flex-wrap items-center gap-3">
+					<div className="flex flex-wrap items-center gap-3 px-4 py-4">
 						<p role="alert" className="text-sm text-destructive">
 							{answerKey.error.message}
 						</p>
@@ -73,13 +76,16 @@ export function AnswerKey() {
 						</Button>
 					</div>
 				) : (
-					<div className="overflow-x-auto rounded-md border border-occult/20">
-						<table className="w-full min-w-[1100px] text-left text-sm">
+					<section
+						className="overflow-x-auto rounded-b-lg"
+						aria-label="GM potion answer key"
+					>
+						<table className="w-full min-w-[1100px] text-left text-xs">
 							<caption className="sr-only">
 								All {answerKey.data.length} potions, their hidden targets and
 								perfect recipes
 							</caption>
-							<thead className="border-b bg-occult/10 text-xs text-muted-foreground">
+							<thead className="border-b bg-muted/30 text-muted-foreground">
 								<tr>
 									{[
 										"Potion",
@@ -98,7 +104,7 @@ export function AnswerKey() {
 										<th
 											key={label}
 											scope="col"
-											className="px-3 py-3 font-medium"
+											className="whitespace-nowrap px-3 py-2 font-medium"
 										>
 											{label}
 										</th>
@@ -109,22 +115,25 @@ export function AnswerKey() {
 								{answerKey.data.map((entry) => (
 									<tr
 										key={entry.potion.id}
-										className="border-b last:border-0 hover:bg-muted/20"
+										className="border-b align-top last:border-0 hover:bg-muted/20"
 									>
-										<th scope="row" className="min-w-40 px-3 py-3 font-medium">
+										<th
+											scope="row"
+											className="min-w-40 px-3 py-2.5 font-semibold"
+										>
 											{entry.potion.name}
 										</th>
-										<td className="px-3 py-3 tabular-nums">
+										<td className="px-3 py-2.5 tabular-nums">
 											{entry.potion.level}
 										</td>
-										<td className="px-3 py-3">
+										<td className="px-3 py-2.5">
 											<Badge variant="outline" className="capitalize">
 												{entry.potion.rarity}
 											</Badge>
 										</td>
-										<td className="px-3 py-3 tabular-nums">{entry.dc}</td>
+										<td className="px-3 py-2.5 tabular-nums">{entry.dc}</td>
 										<td
-											className="whitespace-nowrap px-3 py-3 font-mono tabular-nums"
+											className="whitespace-nowrap px-3 py-2.5 font-mono tabular-nums"
 											aria-label={formatValues(entry.potion.target)}
 										>
 											{TRADITIONS.map((tradition, index) => (
@@ -142,23 +151,23 @@ export function AnswerKey() {
 											))}
 										</td>
 										<td
-											className={`px-3 py-3 ${TRADITION_COLOR[entry.primary]}`}
+											className={`px-3 py-2.5 ${TRADITION_COLOR[entry.primary]}`}
 										>
 											{TRADITION_LABEL[entry.primary]}
 										</td>
-										<td className="px-3 py-3 tabular-nums">
+										<td className="px-3 py-2.5 tabular-nums">
 											±{entry.potion.primaryRoom}
 										</td>
-										<td className="px-3 py-3 tabular-nums">
+										<td className="px-3 py-2.5 tabular-nums">
 											{entry.potion.secondaryBudget}
 										</td>
-										<td className="px-3 py-3">
+										<td className="px-3 py-2.5">
 											{entry.potion.requiredIngredient
 												? (ingredientNames[entry.potion.requiredIngredient] ??
 													entry.potion.requiredIngredient)
 												: "None"}
 										</td>
-										<td className="min-w-64 px-3 py-3">
+										<td className="min-w-64 px-3 py-2.5 leading-relaxed">
 											{Object.entries(entry.potion.perfectRecipe)
 												.map(
 													([id, count]) =>
@@ -166,7 +175,7 @@ export function AnswerKey() {
 												)
 												.join(" + ")}
 										</td>
-										<td className="px-3 py-3">
+										<td className="px-3 py-2.5">
 											<div className="flex flex-wrap gap-1">
 												{entry.known ? (
 													<Badge variant="secondary">Known</Badge>
@@ -182,7 +191,7 @@ export function AnswerKey() {
 												)}
 											</div>
 										</td>
-										<td className="px-3 py-3">
+										<td className="px-3 py-2.5">
 											<Button
 												size="sm"
 												variant={entry.revealed ? "secondary" : "outline"}
@@ -207,7 +216,7 @@ export function AnswerKey() {
 								))}
 							</tbody>
 						</table>
-					</div>
+					</section>
 				)}
 			</CardContent>
 		</Card>

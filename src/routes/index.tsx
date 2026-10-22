@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({ component: Landing });
 function Landing() {
 	return (
 		<main className="page-wrap max-w-6xl py-12 sm:py-20">
-			<section className="grid items-center gap-12 pb-16 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
+			<section className="grid items-center gap-10 pb-16 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
 				<div>
 					<h1 className="max-w-2xl font-display text-5xl leading-[1.1] tracking-tight sm:text-7xl">
 						A little science.
@@ -35,17 +35,16 @@ function Landing() {
 					</div>
 				</div>
 				<aside
-					className="parchment rounded-xl p-7 shadow-xl sm:p-9"
+					className="parchment rounded-lg p-7 sm:p-9"
 					aria-label="A note from your mentor"
 				>
-					<h2 className="text-2xl">Your first experiment</h2>
+					<h2 className="text-xl">Your first experiment</h2>
 					<p className="mt-5 font-display text-3xl leading-snug">
 						“Heartmoss +<br />
 						Marsh Toad Gland”
 					</p>
 					<p className="mt-5 text-sm leading-relaxed">
-						A note from your mentor. A shelf of sixteen ingredients. The rest is
-						yours to discover.
+						A note from your mentor.
 					</p>
 					<div className="mt-7 grid grid-cols-2 gap-3 border-t border-current/20 pt-5 text-sm font-semibold">
 						{[

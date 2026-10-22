@@ -21,42 +21,38 @@ interface ShelfProps {
 
 export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
 	return (
-		<Card className="min-w-0 gap-4">
+		<Card className="ingredient-shelf gap-3 shadow-none">
 			<CardHeader>
-				<CardTitle>Ingredient shelf</CardTitle>
+				<div className="flex flex-wrap items-baseline justify-between gap-2">
+					<CardTitle className="text-lg">Ingredients</CardTitle>
+					<span className="text-xs text-muted-foreground">
+						{ingredients.length} available · Unlimited supply
+					</span>
+				</div>
 				<CardDescription>
-					{ingredients.length} ingredients. Unlimited supply. Choose up to four
-					units.
+					Choose up to four units. Repeats welcome.
 				</CardDescription>
 			</CardHeader>
-			<CardContent className="max-h-[44rem] space-y-4 overflow-y-auto">
+			<CardContent className="ingredient-grid">
 				{ingredients.map((ingredient) => (
 					<div
 						key={ingredient.id}
-						className={`border-b pb-4 last:border-0 last:pb-0 ${mix[ingredient.id] ? "border-primary/50" : ""}`}
+						className={`ingredient-item ${mix[ingredient.id] ? "ingredient-selected" : ""}`}
 					>
-						<div className="flex flex-wrap items-center gap-2">
+						<div className="flex items-start justify-between gap-1">
 							<h3 className="text-sm font-semibold">{ingredient.name}</h3>
-							<Badge variant="outline" className="text-xs capitalize">
+							<Badge
+								variant="outline"
+								className="ingredient-rarity text-xs capitalize"
+							>
 								{ingredient.rarity}
 							</Badge>
 						</div>
-						<p className="mt-1 text-xs capitalize text-muted-foreground">
-							{ingredient.type} · {ingredient.form} · {ingredient.biome}
-						</p>
-						<div className="mt-3 flex flex-wrap items-center justify-between gap-2">
-							<div className="flex gap-1">
-								{TRADITIONS.map((tradition, index) => (
-									<span
-										key={tradition}
-										title={TRADITION_LABEL[tradition]}
-										className={`rounded px-1.5 py-1 font-mono text-xs tabular-nums ${TRADITION_STYLE[tradition].chip}`}
-									>
-										{TRADITION_LABEL[tradition][0]} {ingredient.values[index]}
-									</span>
-								))}
-							</div>
-							<div className="flex items-center gap-1">
+						<div className="mt-2 flex items-center justify-between gap-2">
+							<p className="text-[0.6875rem] capitalize text-muted-foreground">
+								{ingredient.type} · {ingredient.form} · {ingredient.biome}
+							</p>
+							<div className="ingredient-controls flex shrink-0 items-center gap-1">
 								<Button
 									size="icon-sm"
 									variant="outline"
@@ -79,6 +75,17 @@ export function Shelf({ ingredients, mix, units, onChange }: ShelfProps) {
 									<Plus className="size-3" />
 								</Button>
 							</div>
+						</div>
+						<div className="mt-2 grid grid-cols-4 gap-1">
+							{TRADITIONS.map((tradition, index) => (
+								<span
+									key={tradition}
+									title={TRADITION_LABEL[tradition]}
+									className={`whitespace-nowrap font-mono text-xs tabular-nums ${TRADITION_STYLE[tradition].text}`}
+								>
+									{TRADITION_LABEL[tradition][0]} {ingredient.values[index]}
+								</span>
+							))}
 						</div>
 					</div>
 				))}
