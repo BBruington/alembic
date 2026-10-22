@@ -49,7 +49,7 @@ export default {
 		reveal: authenticated
 			.input(revealSchema)
 			.handler(({ context, input }) =>
-				revealPotion(context.userId, input.potionId, input.revealed),
+				revealPotion(context.userId, input.potionId, input.reveal),
 			),
 	},
 };

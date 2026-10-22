@@ -131,6 +131,7 @@ export interface CodexEntryView {
 	crafterGates: Gate[];
 	bestOffBy: number | null;
 	solvedMix: Mix | null;
+	formulaRevealed: boolean;
 	perfected: boolean;
 	source: "mentor" | "brewed" | "revealed";
 	note: string | null;
@@ -163,5 +164,6 @@ export interface AnswerKeyEntry {
 	dc: number;
 	known: boolean;
 	revealed: boolean;
+	formulaRevealed: boolean;
 	perfected: boolean;
 }

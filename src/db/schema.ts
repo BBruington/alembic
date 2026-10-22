@@ -46,6 +46,7 @@ export const codexEntries = pgTable(
 		mentor: boolean().notNull().default(false),
 		formed: boolean().notNull().default(false),
 		revealed: boolean().notNull().default(false),
+		formulaRevealed: boolean("formula_revealed").notNull().default(false),
 		perfected: boolean().notNull().default(false),
 		bestOffBy: integer("best_off_by"),
 		bestMix: jsonb("best_mix").$type<Mix>(),

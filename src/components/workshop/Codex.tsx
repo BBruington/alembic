@@ -90,6 +90,11 @@ export function Codex({
 								</p>
 								{entry.solvedMix && (
 									<p className="text-xs">
+										{entry.formulaRevealed && (
+											<span className="text-muted-foreground">
+												Formula from your GM:{" "}
+											</span>
+										)}
 										{Object.entries(entry.solvedMix)
 											.map(
 												([id, units]) =>
@@ -103,7 +108,7 @@ export function Codex({
 										Mentor's note: {entry.note}
 									</p>
 								)}
-								{entry.source === "revealed" && (
+								{entry.source === "revealed" && !entry.formulaRevealed && (
 									<p className="text-xs text-muted-foreground">
 										Revealed by GM
 									</p>

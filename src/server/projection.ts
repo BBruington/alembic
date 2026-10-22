@@ -24,6 +24,7 @@ export interface CodexRecord {
 	mentor: boolean;
 	formed: boolean;
 	revealed: boolean;
+	formulaRevealed: boolean;
 	perfected: boolean;
 	bestOffBy: number | null;
 	bestMix: Mix | null;
@@ -69,9 +70,11 @@ export function toWorkshopView(input: {
 			crafterGates: crafterGates(potion, crafter),
 			bestOffBy: entry.bestOffBy,
 			solvedMix:
+				(entry.formulaRevealed ? potion.perfectRecipe : null) ??
 				(entry.formed ? entry.bestMix : null) ??
 				(entry.mentor && potion.id === STARTER_POTION_ID ? MENTOR_MIX : null),
 			perfected: entry.perfected,
+			formulaRevealed: entry.formulaRevealed,
 			source: entry.mentor ? "mentor" : entry.formed ? "brewed" : "revealed",
 			note: entry.note,
 		});

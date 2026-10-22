@@ -10,7 +10,7 @@ Live: https://alembic-six.vercel.app
 
 The workshop starts with Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor). The bench accepts up to four ingredient units, including repeats, and shows the four tradition totals as you mix. You can supply a table d20 or let the server roll it.
 
-Brewing resolves on the server, including ingredient and crafter gates, PF2e degrees of success, perfect batches and downtime. Results guide the next attempt with tradition arrows. The codex saves your best formed combination for each potion, shows its off-by, and can replace the bench mix with it using **Add to bench**. The mentor's starting combination is available before your first brew; GM reveals never supply a combination. The brew log keeps the previous attempts. GM view has the answer key and reveal controls; player responses leave the hidden targets and GM recipes out. The crafter sheet changes Wren's level, Intelligence, Crafting, feat and tools.
+Brewing resolves on the server, including ingredient and crafter gates, PF2e degrees of success, perfect batches and downtime. Results guide the next attempt with tradition arrows. The codex saves your best formed combination for each potion, shows its off-by, and can replace the bench mix with it using **Add to bench**. The mentor's starting combination is available before your first brew. GM reveal controls can share only the potion's identity or its perfect formula, which takes precedence for **Add to bench** while revealed. Hiding the formula restores your best formed mix or the mentor's starting combination. The brew log keeps the previous attempts. Player responses never include targets, rooms, secondary budgets or required ingredients. The crafter sheet changes Wren's level, Intelligence, Crafting, feat and tools.
 
 Clerk handles sign-in and Neon stores each account's workshop. This sandbox deliberately uses a Clerk development instance, so its development badge, accounts.dev redirect and OAuth branding are expected. There's no guest sign-in.
 
@@ -52,7 +52,7 @@ The brewing tests cover the worked examples and outcome rules. The player projec
 2. Follow the mentor's note: add **Heartmoss + Marsh Toad Gland**. Set the table d20 to **6** and brew. The totals are **7/26/1/8**, the DC is **15**, and the result is off by **14**. Arcane and Primal are on; Occult and Divine are low.
 3. Add **Glowcap** to that mix and brew again with d20 **6**. The totals are **7/26/10/13**, a perfect success that makes **1 + 1d3** potions. The codex marks Healing Potion (Minor) Perfected.
 4. Experiment toward the other ten potions. Try **Silverleaf + Ghost Orchid + Moonwell Water** for a blocked brew: Truth Potion is level 6, but Wren is level 5.
-5. Switch **Viewing as** to **GM**. The answer key shows every target and perfect recipe. Reveal **Invisibility Potion**, then return to Player view. Its codex entry is Known, with its name, rarity, DC and odds, but no target.
+5. Switch **Viewing as** to **GM**. The answer key shows every target and perfect recipe. Choose **Potion** for **Invisibility Potion**, then return to Player view. Its codex entry is Known, with its name, rarity, DC and odds, but no target. Choose **Formula** to also share its combination and **Add to bench**, or **Hidden** to remove the GM reveal without erasing brewed or mentor knowledge.
 
 ## Deploy to Vercel
 

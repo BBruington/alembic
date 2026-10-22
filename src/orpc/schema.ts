@@ -27,5 +27,6 @@ export type BrewAttempt = z.infer<typeof brewAttemptSchema>;
 export const viewingSetSchema = z.object({ as: z.enum(["gm", "player"]) });
 export const revealSchema = z.object({
 	potionId: z.string(),
-	revealed: z.boolean(),
+	reveal: z.enum(["none", "potion", "formula"]),
 });
+export type Reveal = z.infer<typeof revealSchema>;

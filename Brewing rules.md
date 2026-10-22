@@ -84,7 +84,7 @@ Name the closest blocked candidate (lowest off by after step 3) and **every** ga
 
 - Known: a potion that has formed, been revealed by the GM, or arrived with a mentor's note.
 - Perfected: any formed brew with a perfect mix.
-- Known entries show name, rarity, level, DC, the crafter's odds and the best off by so far. Players never see targets, rooms, required ingredients or recipes.
+- Known entries show name, rarity, level, DC, the crafter's odds and the best off by so far. Players never see targets, rooms or required ingredients. The GM may reveal a perfect formula; the codex then offers it for Add to bench. Without a revealed formula, the player's own best formed combination takes precedence over the mentor's starting mix.
 
 ## 11. House rules
 
@@ -94,7 +94,7 @@ Name the closest blocked candidate (lowest off by after step 3) and **every** ga
 4. A perfect mix yields 1d3 extra potions on a success.
 5. A failed check with a perfect mix still salvages one potion.
 6. Rare potions need master Crafting.
-7. The GM can reveal a potion by name; its target stays hidden.
+7. The GM can reveal a potion by name or share its formula; its target stays hidden. Hiding a reveal never removes brewed or mentor knowledge.
 
 ## 12. Worked examples
 

@@ -11,7 +11,7 @@ import { potionDc, primaryOf, resolveBrew } from "#/brewing/engine";
 import type { AnswerKeyEntry, BrewView, ViewingAs } from "#/brewing/types";
 import { db } from "#/db/index";
 import { brews, campaigns, codexEntries, crafters } from "#/db/schema";
-import type { BrewAttempt, CrafterEdit } from "#/orpc/schema";
+import type { BrewAttempt, CrafterEdit, Reveal } from "#/orpc/schema";
 import { toCrafterView, toWorkshopView } from "./projection";
 
 export async function bootstrap(userId: string) {
@@ -216,6 +216,7 @@ export async function getAnswerKey(userId: string): Promise<AnswerKeyEntry[]> {
 			dc: potionDc(potion),
 			known: Boolean(entry && (entry.mentor || entry.formed || entry.revealed)),
 			revealed: entry?.revealed ?? false,
+			formulaRevealed: entry?.formulaRevealed ?? false,
 			perfected: entry?.perfected ?? false,
 		};
 	});
@@ -224,17 +225,19 @@ export async function getAnswerKey(userId: string): Promise<AnswerKeyEntry[]> {
 export async function revealPotion(
 	userId: string,
 	potionId: string,
-	revealed: boolean,
+	reveal: Reveal["reveal"],
 ): Promise<{ ok: true }> {
 	if (!POTIONS.some((potion) => potion.id === potionId))
 		throw new ORPCError("BAD_REQUEST", { message: "Unknown potion" });
 	const campaign = await requireGm(userId);
+	const revealed = reveal !== "none";
+	const formulaRevealed = reveal === "formula";
 	await db
 		.insert(codexEntries)
-		.values({ campaignId: campaign.id, potionId, revealed })
+		.values({ campaignId: campaign.id, potionId, revealed, formulaRevealed })
 		.onConflictDoUpdate({
 			target: [codexEntries.campaignId, codexEntries.potionId],
-			set: { revealed },
+			set: { revealed, formulaRevealed },
 			setWhere: and(
 				eq(codexEntries.campaignId, campaign.id),
 				eq(codexEntries.potionId, potionId),

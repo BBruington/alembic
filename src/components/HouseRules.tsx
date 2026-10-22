@@ -5,7 +5,7 @@ const HOUSE_RULES = [
 	"A perfect mix yields 1d3 extra potions on a success.",
 	"A failed check with a perfect mix still salvages one potion.",
 	"Rare potions need master Crafting.",
-	"The GM can reveal a potion by name; its target stays hidden.",
+	"The GM can reveal a potion by name, or its full formula; its target stays hidden.",
 ];
 
 export function HouseRules() {

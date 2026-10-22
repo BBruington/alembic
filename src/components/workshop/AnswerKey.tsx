@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Shield } from "lucide-react";
+import { Check, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { TRADITIONS } from "#/brewing/types";
 import { Badge } from "#/components/ui/badge";
@@ -11,15 +11,9 @@ import {
 	CardHeader,
 	CardTitle,
 } from "#/components/ui/card";
-import { formatValues, TRADITION_LABEL } from "#/lib/format";
+import { TRADITION_LABEL } from "#/lib/format";
 import { orpc } from "#/orpc/client";
-
-const TRADITION_COLOR = {
-	arcane: "text-arcane",
-	primal: "text-primal",
-	occult: "text-occult",
-	divine: "text-divine",
-};
+import { TRADITION_STYLE } from "./TraditionBars";
 
 export function AnswerKey() {
 	const queryClient = useQueryClient();
@@ -43,9 +37,9 @@ export function AnswerKey() {
 		]),
 	);
 	return (
-		<Card className="gap-0 rounded-lg border-occult/30 py-0 shadow-none">
-			<CardHeader className="gap-1 border-b border-occult/20 px-4 py-3 sm:px-4 [.border-b]:pb-3">
-				<CardTitle className="flex items-center gap-2 text-lg">
+		<Card className="gap-0 rounded-lg py-0 shadow-none">
+			<CardHeader className="gap-1 border-b px-4 py-3 sm:px-4 [.border-b]:pb-3">
+				<CardTitle className="flex flex-wrap items-center gap-2 text-lg">
 					<Shield className="size-4 shrink-0 text-occult" aria-hidden="true" />
 					Answer key
 					<Badge variant="outline" className="font-sans text-occult">
@@ -53,8 +47,9 @@ export function AnswerKey() {
 					</Badge>
 				</CardTitle>
 				<CardDescription className="text-xs">
-					Hidden targets and perfect recipes. Reveal a potion's name to the
-					player without revealing its formula.
+					Reveal a potion's identity or share its formula. Targets and matching
+					rules always stay hidden. Hidden removes only the GM reveal, not
+					brewed or mentor knowledge.
 				</CardDescription>
 			</CardHeader>
 			<CardContent className="px-0 sm:px-0">
@@ -76,146 +71,139 @@ export function AnswerKey() {
 						</Button>
 					</div>
 				) : (
-					<section
-						className="overflow-x-auto rounded-b-lg"
-						aria-label="GM potion answer key"
-					>
-						<table className="w-full min-w-[1100px] text-left text-xs">
-							<caption className="sr-only">
-								All {answerKey.data.length} potions, their hidden targets and
-								perfect recipes
-							</caption>
-							<thead className="border-b bg-muted/30 text-muted-foreground">
-								<tr>
-									{[
-										"Potion",
-										"Level",
-										"Rarity",
-										"DC",
-										"Target A / P / O / D",
-										"Primary",
-										"Primary room",
-										"Secondary budget",
-										"Required ingredient",
-										"Perfect recipe",
-										"Status",
-										"Player reveal",
-									].map((label) => (
-										<th
-											key={label}
-											scope="col"
-											className="whitespace-nowrap px-3 py-2 font-medium"
-										>
-											{label}
-										</th>
-									))}
-								</tr>
-							</thead>
-							<tbody>
-								{answerKey.data.map((entry) => (
-									<tr
-										key={entry.potion.id}
-										className="border-b align-top last:border-0 hover:bg-muted/20"
-									>
-										<th
-											scope="row"
-											className="min-w-40 px-3 py-2.5 font-semibold"
-										>
+					<section aria-label="GM potion answer key">
+						{answerKey.data.map((entry) => {
+							const saving =
+								reveal.isPending &&
+								reveal.variables?.potionId === entry.potion.id;
+							const selected = saving
+								? reveal.variables.reveal
+								: entry.formulaRevealed
+									? "formula"
+									: entry.revealed
+										? "potion"
+										: "none";
+							return (
+								<article
+									key={entry.potion.id}
+									aria-label={entry.potion.name}
+									className="grid gap-4 border-b px-4 py-4 last:border-0 sm:grid-cols-2 sm:gap-x-6 xl:grid-cols-[minmax(0,0.9fr)_minmax(0,1.25fr)_minmax(0,1fr)_auto]"
+								>
+									<div className="min-w-0 space-y-2">
+										<h3 className="text-sm font-semibold">
 											{entry.potion.name}
-										</th>
-										<td className="px-3 py-2.5 tabular-nums">
-											{entry.potion.level}
-										</td>
-										<td className="px-3 py-2.5">
+										</h3>
+										<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+											<span>Level {entry.potion.level}</span>
 											<Badge variant="outline" className="capitalize">
 												{entry.potion.rarity}
 											</Badge>
-										</td>
-										<td className="px-3 py-2.5 tabular-nums">{entry.dc}</td>
-										<td
-											className="whitespace-nowrap px-3 py-2.5 font-mono tabular-nums"
-											aria-label={formatValues(entry.potion.target)}
-										>
+											<span className="tabular-nums">DC {entry.dc}</span>
+										</div>
+										<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+											{entry.known ? (
+												<Badge variant="secondary">Known</Badge>
+											) : (
+												<span>Undiscovered</span>
+											)}
+											{entry.perfected && (
+												<Badge variant="outline" className="gap-1 text-primal">
+													<Check className="size-3" aria-hidden="true" />
+													Perfected
+												</Badge>
+											)}
+										</div>
+									</div>
+									<div className="min-w-0 space-y-2">
+										<p className="text-xs text-muted-foreground">Target</p>
+										<div className="grid grid-cols-4 gap-1.5">
 											{TRADITIONS.map((tradition, index) => (
-												<span key={tradition}>
-													<span
-														className={TRADITION_COLOR[tradition]}
-														title={TRADITION_LABEL[tradition]}
-													>
+												<span
+													key={tradition}
+													className={`flex flex-col items-center rounded-md px-1 py-1 text-xs ${TRADITION_STYLE[tradition].chip} ${tradition === entry.primary ? "ring-1 ring-foreground ring-offset-2 ring-offset-card" : ""}`}
+												>
+													<span>{TRADITION_LABEL[tradition]}</span>
+													<strong className="text-sm tabular-nums">
 														{entry.potion.target[index]}
-													</span>
-													{index < 3 && (
-														<span className="text-muted-foreground"> / </span>
-													)}
+													</strong>
 												</span>
 											))}
-										</td>
-										<td
-											className={`px-3 py-2.5 ${TRADITION_COLOR[entry.primary]}`}
-										>
-											{TRADITION_LABEL[entry.primary]}
-										</td>
-										<td className="px-3 py-2.5 tabular-nums">
-											±{entry.potion.primaryRoom}
-										</td>
-										<td className="px-3 py-2.5 tabular-nums">
-											{entry.potion.secondaryBudget}
-										</td>
-										<td className="px-3 py-2.5">
+										</div>
+										<p className="text-xs leading-relaxed text-muted-foreground tabular-nums">
+											<span className={TRADITION_STYLE[entry.primary].text}>
+												{TRADITION_LABEL[entry.primary]} primary
+											</span>
+											{" · "}Room ±{entry.potion.primaryRoom}
+											{" · "}Budget {entry.potion.secondaryBudget}
+										</p>
+									</div>
+									<div className="min-w-0 space-y-2 text-xs leading-relaxed">
+										<p className="text-muted-foreground">Perfect recipe</p>
+										<p>
+											{Object.entries(entry.potion.perfectRecipe)
+												.map(
+													([id, count]) =>
+														`${ingredientNames[id] ?? id} ×${count}`,
+												)
+												.join(" + ")}
+										</p>
+										<p className="text-muted-foreground">
+											Required:{" "}
 											{entry.potion.requiredIngredient
 												? (ingredientNames[entry.potion.requiredIngredient] ??
 													entry.potion.requiredIngredient)
 												: "None"}
-										</td>
-										<td className="min-w-64 px-3 py-2.5 leading-relaxed">
-											{Object.entries(entry.potion.perfectRecipe)
-												.map(
-													([id, count]) =>
-														`${ingredientNames[id] ?? id}${count > 1 ? ` ×${count}` : ""}`,
-												)
-												.join(" + ")}
-										</td>
-										<td className="px-3 py-2.5">
-											<div className="flex flex-wrap gap-1">
-												{entry.known ? (
-													<Badge variant="secondary">Known</Badge>
-												) : (
-													<span className="text-xs text-muted-foreground">
-														Undiscovered
-													</span>
-												)}
-												{entry.perfected && (
-													<Badge variant="outline" className="text-primal">
-														Perfected
-													</Badge>
-												)}
-											</div>
-										</td>
-										<td className="px-3 py-2.5">
-											<Button
-												size="sm"
-												variant={entry.revealed ? "secondary" : "outline"}
-												disabled={reveal.isPending}
-												aria-label={`${entry.revealed ? "Unreveal" : "Reveal"} ${entry.potion.name}`}
-												onClick={() =>
-													reveal.mutate({
-														potionId: entry.potion.id,
-														revealed: !entry.revealed,
-													})
-												}
-											>
-												{reveal.isPending &&
-												reveal.variables?.potionId === entry.potion.id
-													? "Saving…"
-													: entry.revealed
-														? "Unreveal"
-														: "Reveal"}
-											</Button>
-										</td>
-									</tr>
-								))}
-							</tbody>
-						</table>
+										</p>
+									</div>
+									<div className="space-y-2">
+										<p className="text-xs text-muted-foreground">
+											Player reveal
+											<output aria-live="polite">
+												{saving ? " · Saving…" : ""}
+											</output>
+										</p>
+										<fieldset
+											className="flex w-fit gap-1 rounded-lg border bg-muted/40 p-1"
+											aria-busy={saving}
+										>
+											<legend className="sr-only">
+												Player reveal for {entry.potion.name}
+											</legend>
+											{(["none", "potion", "formula"] as const).map((value) => {
+												const label =
+													value === "none"
+														? "Hidden"
+														: value === "potion"
+															? "Potion"
+															: "Formula";
+												return (
+													<Button
+														key={value}
+														type="button"
+														size="sm"
+														variant={selected === value ? "default" : "ghost"}
+														aria-pressed={selected === value}
+														aria-label={`${label} for ${entry.potion.name}`}
+														aria-disabled={reveal.isPending}
+														className="aria-disabled:opacity-50"
+														onClick={() => {
+															if (reveal.isPending || selected === value)
+																return;
+															reveal.mutate({
+																potionId: entry.potion.id,
+																reveal: value,
+															});
+														}}
+													>
+														{label}
+													</Button>
+												);
+											})}
+										</fieldset>
+									</div>
+								</article>
+							);
+						})}
 					</section>
 				)}
 			</CardContent>
