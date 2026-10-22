@@ -87,24 +87,14 @@ export function Codex({
 									</span>
 								</p>
 								{entry.solvedMix && (
-									<div>
-										<p className="text-xs">
-											{Object.entries(entry.solvedMix)
-												.map(
-													([id, units]) =>
-														`${workshop.ingredients.find((ingredient) => ingredient.id === id)?.name ?? id} ×${units}`,
-												)
-												.join(" + ")}
-											{entry.bestOffBy !== null && (
-												<span className="text-muted-foreground">
-													{" · "}
-													{entry.bestOffBy === 0
-														? "Perfect"
-														: `Off by ${entry.bestOffBy}`}
-												</span>
-											)}
-										</p>
-									</div>
+									<p className="text-xs">
+										{Object.entries(entry.solvedMix)
+											.map(
+												([id, units]) =>
+													`${workshop.ingredients.find((ingredient) => ingredient.id === id)?.name ?? id} ×${units}`,
+											)
+											.join(" + ")}
+									</p>
 								)}
 								{entry.source === "mentor" && entry.note && (
 									<p className="text-xs text-muted-foreground">
