@@ -15,6 +15,7 @@ import {
 } from "#/components/ui/tooltip";
 import { AnswerKey } from "#/components/workshop/AnswerKey";
 import { BrewBench } from "#/components/workshop/BrewBench";
+import { BrewingLoader } from "#/components/workshop/BrewingLoader";
 import { BrewLog } from "#/components/workshop/BrewLog";
 import { Codex } from "#/components/workshop/Codex";
 import { CrafterCard } from "#/components/workshop/CrafterCard";
@@ -86,9 +87,7 @@ function Workshop() {
 	if (workshop.isPending)
 		return (
 			<main className="page-wrap px-4 py-12">
-				<output className="text-muted-foreground">
-					Opening your workshop…
-				</output>
+				<BrewingLoader />
 			</main>
 		);
 	if (!workshop.data)

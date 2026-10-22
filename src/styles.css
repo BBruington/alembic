@@ -375,6 +375,62 @@
 	}
 }
 
+.brewing-loader {
+	display: flex;
+	min-height: 60vh;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	color: var(--muted-foreground);
+}
+
+.brewing-loader svg {
+	width: 6rem;
+	overflow: visible;
+}
+
+.brewing-loader-glass {
+	fill: none;
+	stroke: var(--primary);
+	stroke-width: 2.5;
+	stroke-linecap: round;
+	stroke-linejoin: round;
+}
+
+.brewing-loader-liquid {
+	fill: var(--primal);
+	opacity: 0.85;
+}
+
+.brewing-loader-bubble {
+	fill: var(--foreground);
+	opacity: 0;
+	animation: brewing-bubble 1.6s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+
+.brewing-loader-bubble:nth-of-type(2) {
+	animation-delay: 0.5s;
+}
+
+.brewing-loader-bubble:nth-of-type(3) {
+	animation-delay: 1s;
+}
+
+@keyframes brewing-bubble {
+	0% {
+		transform: translateY(0);
+		opacity: 0;
+	}
+	20% {
+		opacity: 0.9;
+	}
+	100% {
+		transform: translateY(-14px);
+		opacity: 0;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	*, *::before, *::after {
 		animation-duration: 0.01ms !important;
