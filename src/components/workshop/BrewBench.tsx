@@ -12,6 +12,7 @@ import {
 import { Input } from "#/components/ui/input";
 import { Label } from "#/components/ui/label";
 import { TraditionBars } from "#/components/workshop/TraditionBars";
+import { cn } from "#/lib/utils";
 
 interface BrewBenchProps {
 	ingredients: readonly Ingredient[];
@@ -22,6 +23,7 @@ interface BrewBenchProps {
 	onChange: (ingredientId: string, delta: number) => void;
 	onClear: () => void;
 	onBrew: (d20?: number) => void;
+	previewing?: boolean;
 }
 
 export function BrewBench({
@@ -33,6 +35,7 @@ export function BrewBench({
 	onChange,
 	onClear,
 	onBrew,
+	previewing = false,
 }: BrewBenchProps) {
 	const [tableRoll, setTableRoll] = useState("");
 	const d20 = tableRoll === "" ? undefined : Number(tableRoll);
@@ -49,11 +52,17 @@ export function BrewBench({
 		}
 	}
 	return (
-		<Card className="gap-4 border-primary/40 shadow-none">
+		<Card
+			className={cn(
+				"gap-4 border-primary/40 shadow-none transition-[border-color,box-shadow] duration-150",
+				previewing && "border-primary ring-2 ring-primary/40",
+			)}
+		>
 			<CardHeader>
 				<div className="flex items-center justify-between gap-3">
 					<CardTitle className="text-lg">Brew bench</CardTitle>
 					<span className="font-mono text-xs text-muted-foreground">
+						{previewing ? "Preview · " : ""}
 						{units} / 4 units
 					</span>
 				</div>

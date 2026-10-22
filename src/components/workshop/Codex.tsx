@@ -14,9 +14,11 @@ import { formatGate, formatOdds } from "#/lib/format";
 export function Codex({
 	workshop,
 	onUseMix,
+	onPreviewMix,
 }: {
 	workshop: WorkshopView;
 	onUseMix: (mix: Mix) => void;
+	onPreviewMix: (mix: Mix | null) => void;
 }) {
 	return (
 		<Card className="h-fit gap-0 rounded-lg py-0 shadow-none">
@@ -145,7 +147,15 @@ export function Codex({
 										variant="outline"
 										size="sm"
 										className="mt-auto self-end"
-										onClick={() => entry.solvedMix && onUseMix(entry.solvedMix)}
+										onClick={() => {
+											if (!entry.solvedMix) return;
+											onPreviewMix(null);
+											onUseMix(entry.solvedMix);
+										}}
+										onPointerEnter={() => onPreviewMix(entry.solvedMix)}
+										onPointerLeave={() => onPreviewMix(null)}
+										onFocus={() => onPreviewMix(entry.solvedMix)}
+										onBlur={() => onPreviewMix(null)}
 										aria-label={`Add ${entry.name} combination to bench`}
 									>
 										<FlaskConical className="size-3.5" aria-hidden="true" />

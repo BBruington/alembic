@@ -38,6 +38,7 @@ function Workshop() {
 	const queryClient = useQueryClient();
 	const workshop = useQuery(orpc.workshop.get.queryOptions());
 	const [mix, setMix] = useState<Mix>({});
+	const [previewMix, setPreviewMix] = useState<Mix | null>(null);
 	const [result, setResult] = useState<BrewView | null>(null);
 	const benchRef = useRef<HTMLElement>(null);
 	const [benchVisible, setBenchVisible] = useState(true);
@@ -145,7 +146,11 @@ function Workshop() {
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="codex">
-							<Codex workshop={view} onUseMix={useMix} />
+							<Codex
+								workshop={view}
+								onUseMix={useMix}
+								onPreviewMix={setPreviewMix}
+							/>
 						</TabsContent>
 						<TabsContent value="log">
 							<BrewLog log={view.log} ingredients={view.ingredients} />
@@ -166,8 +171,13 @@ function Workshop() {
 					)}
 					<BrewBench
 						ingredients={view.ingredients}
-						mix={mix}
-						units={units}
+						mix={previewMix ?? mix}
+						units={
+							previewMix
+								? Object.values(previewMix).reduce((sum, n) => sum + n, 0)
+								: units
+						}
+						previewing={previewMix !== null}
 						pending={brew.isPending}
 						error={brew.error?.message ?? null}
 						onChange={changeIngredient}
