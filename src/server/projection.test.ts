@@ -1,5 +1,10 @@
 import { describe, expect, test } from "bun:test";
-import { POTIONS, WREN } from "#/brewing/catalog";
+import {
+	MENTOR_MIX,
+	POTIONS,
+	STARTER_POTION_ID,
+	WREN,
+} from "#/brewing/catalog";
 import { toWorkshopView } from "./projection";
 
 describe("player workshop projection", () => {
@@ -15,6 +20,7 @@ describe("player workshop projection", () => {
 				revealed: true,
 				perfected: false,
 				bestOffBy: null,
+				bestMix: null,
 				note: null,
 			})),
 			log: [],
@@ -33,6 +39,10 @@ describe("player workshop projection", () => {
 		}
 		for (const potion of POTIONS) {
 			expect(serialized).not.toContain(potion.target.join("/"));
+			expect(
+				view.codex.find((entry) => entry.potionId === potion.id)?.solvedMix,
+			).toBeNull();
+			expect(serialized).not.toContain(JSON.stringify(potion.perfectRecipe));
 			expect(serialized).not.toContain(JSON.stringify(potion.target));
 		}
 	});
@@ -45,6 +55,7 @@ describe("player workshop projection", () => {
 			revealed: index === 2,
 			perfected: index === 1,
 			bestOffBy: index === 1 ? 0 : null,
+			bestMix: index === 1 ? potion.perfectRecipe : null,
 			note: index === 0 ? "Mentor note" : null,
 		}));
 		const view = toWorkshopView({
@@ -62,5 +73,44 @@ describe("player workshop projection", () => {
 		expect(view.undiscoveredCount).toBe(8);
 		expect(view.crafter.downtimeDays).toBe(3);
 		expect(view.crafter.modifier).toBe(14);
+		expect(view.codex[0].solvedMix).toEqual(MENTOR_MIX);
+		expect(view.codex[1].solvedMix).toEqual(POTIONS[1].perfectRecipe);
+		expect(view.codex[2].solvedMix).toBeNull();
+		for (const entry of view.codex) {
+			for (const potion of POTIONS) {
+				if (entry.potionId === potion.id && entry.source === "brewed") continue;
+				expect(entry.solvedMix).not.toEqual(potion.perfectRecipe);
+			}
+		}
+	});
+
+	test.each([
+		{ bestMix: { ...MENTOR_MIX, glowcap: 2 }, bestOffBy: 14, perfected: false },
+		{ bestMix: { ...MENTOR_MIX, glowcap: 1 }, bestOffBy: 0, perfected: true },
+	])("a mentor's own formed mix takes precedence over the note: %j", ({
+		bestMix,
+		bestOffBy,
+		perfected,
+	}) => {
+		const view = toWorkshopView({
+			viewingAs: "player",
+			isGm: true,
+			crafter: { ...WREN, downtimeDays: 1 },
+			entries: [
+				{
+					potionId: STARTER_POTION_ID,
+					mentor: true,
+					formed: true,
+					revealed: false,
+					perfected,
+					bestOffBy,
+					bestMix,
+					note: null,
+				},
+			],
+			log: [],
+		});
+		expect(view.codex[0].solvedMix).toEqual(bestMix);
+		expect(view.codex[0].bestOffBy).toBe(bestOffBy);
 	});
 });

@@ -133,13 +133,15 @@ export async function attemptBrew(
 					formed: true,
 					perfected: result.perfect,
 					bestOffBy: result.offBy,
+					bestMix: input.mix,
 				})
 				.onConflictDoUpdate({
 					target: [codexEntries.campaignId, codexEntries.potionId],
 					set: {
 						formed: true,
 						perfected: sql`${codexEntries.perfected} OR ${result.perfect}`,
-						bestOffBy: sql`LEAST(${codexEntries.bestOffBy}, ${result.offBy})`,
+						bestOffBy: sql`CASE WHEN ${codexEntries.bestMix} IS NULL THEN ${result.offBy} ELSE LEAST(${codexEntries.bestOffBy}, ${result.offBy}) END`,
+						bestMix: sql`CASE WHEN ${codexEntries.bestMix} IS NULL OR ${codexEntries.bestOffBy} IS NULL OR ${result.offBy} < ${codexEntries.bestOffBy} THEN excluded.best_mix ELSE ${codexEntries.bestMix} END`,
 					},
 				});
 		}

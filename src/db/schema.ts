@@ -48,6 +48,7 @@ export const codexEntries = pgTable(
 		revealed: boolean().notNull().default(false),
 		perfected: boolean().notNull().default(false),
 		bestOffBy: integer("best_off_by"),
+		bestMix: jsonb("best_mix").$type<Mix>(),
 		note: text(),
 	},
 	(table) => [primaryKey({ columns: [table.campaignId, table.potionId] })],

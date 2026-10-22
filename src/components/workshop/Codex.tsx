@@ -1,6 +1,7 @@
-import { BookOpen, Check, LockKeyhole } from "lucide-react";
-import type { WorkshopView } from "#/brewing/types";
+import { BookOpen, Check, FlaskConical, LockKeyhole } from "lucide-react";
+import type { Mix, WorkshopView } from "#/brewing/types";
 import { Badge } from "#/components/ui/badge";
+import { Button } from "#/components/ui/button";
 import {
 	Card,
 	CardContent,
@@ -10,7 +11,13 @@ import {
 } from "#/components/ui/card";
 import { formatGate, formatOdds } from "#/lib/format";
 
-export function Codex({ workshop }: { workshop: WorkshopView }) {
+export function Codex({
+	workshop,
+	onUseMix,
+}: {
+	workshop: WorkshopView;
+	onUseMix: (mix: Mix) => void;
+}) {
 	return (
 		<Card className="h-fit gap-0 rounded-lg py-0 shadow-none">
 			<CardHeader className="gap-1 border-b px-4 py-3 sm:px-4 [.border-b]:pb-3">
@@ -79,6 +86,37 @@ export function Codex({ workshop }: { workshop: WorkshopView }) {
 										{entry.bestOffBy ?? "Not brewed yet"}
 									</span>
 								</p>
+								{entry.solvedMix && (
+									<div className="space-y-2">
+										<p className="text-xs">
+											{Object.entries(entry.solvedMix)
+												.map(
+													([id, units]) =>
+														`${workshop.ingredients.find((ingredient) => ingredient.id === id)?.name ?? id} ×${units}`,
+												)
+												.join(" + ")}
+											{entry.bestOffBy !== null && (
+												<span className="text-muted-foreground">
+													{" · "}
+													{entry.bestOffBy === 0
+														? "Perfect"
+														: `Off by ${entry.bestOffBy}`}
+												</span>
+											)}
+										</p>
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() =>
+												entry.solvedMix && onUseMix(entry.solvedMix)
+											}
+											aria-label={`Add ${entry.name} combination to bench`}
+										>
+											<FlaskConical className="size-3.5" aria-hidden="true" />
+											Add to bench
+										</Button>
+									</div>
+								)}
 								{entry.source === "mentor" && entry.note && (
 									<p className="text-xs text-muted-foreground">
 										Mentor's note: {entry.note}

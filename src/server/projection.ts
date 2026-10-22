@@ -1,4 +1,9 @@
-import { INGREDIENTS, POTIONS } from "#/brewing/catalog";
+import {
+	INGREDIENTS,
+	MENTOR_MIX,
+	POTIONS,
+	STARTER_POTION_ID,
+} from "#/brewing/catalog";
 import {
 	crafterGates,
 	crafterModifier,
@@ -9,6 +14,7 @@ import type {
 	BrewLogEntry,
 	Crafter,
 	CrafterView,
+	Mix,
 	ViewingAs,
 	WorkshopView,
 } from "#/brewing/types";
@@ -20,6 +26,7 @@ export interface CodexRecord {
 	revealed: boolean;
 	perfected: boolean;
 	bestOffBy: number | null;
+	bestMix: Mix | null;
 	note: string | null;
 }
 
@@ -61,6 +68,11 @@ export function toWorkshopView(input: {
 			odds: odds(crafter.modifier, dc),
 			crafterGates: crafterGates(potion, crafter),
 			bestOffBy: entry.bestOffBy,
+			solvedMix: entry.formed
+				? entry.bestMix
+				: entry.mentor && potion.id === STARTER_POTION_ID
+					? MENTOR_MIX
+					: null,
 			perfected: entry.perfected,
 			source: entry.mentor ? "mentor" : entry.formed ? "brewed" : "revealed",
 			note: entry.note,

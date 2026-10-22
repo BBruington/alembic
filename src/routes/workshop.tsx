@@ -32,7 +32,7 @@ function Workshop() {
 	const workshop = useQuery(orpc.workshop.get.queryOptions());
 	const [mix, setMix] = useState<Mix>({});
 	const [result, setResult] = useState<BrewView | null>(null);
-	const benchRef = useRef<HTMLDivElement>(null);
+	const benchRef = useRef<HTMLElement>(null);
 	const [benchVisible, setBenchVisible] = useState(true);
 	const hasWorkshop = workshop.data !== undefined;
 	useEffect(() => {
@@ -69,6 +69,12 @@ function Workshop() {
 			else next[id] = quantity;
 			return next;
 		});
+	}
+
+	function useMix(nextMix: Mix) {
+		setMix(nextMix);
+		benchRef.current?.scrollIntoView({ block: "start" });
+		benchRef.current?.focus({ preventScroll: true });
 	}
 
 	if (workshop.isPending)
@@ -117,14 +123,20 @@ function Workshop() {
 							</TabsTrigger>
 						</TabsList>
 						<TabsContent value="codex">
-							<Codex workshop={view} />
+							<Codex workshop={view} onUseMix={useMix} />
 						</TabsContent>
 						<TabsContent value="log">
 							<BrewLog log={view.log} ingredients={view.ingredients} />
 						</TabsContent>
 					</Tabs>
 				</div>
-				<div ref={benchRef} className="workshop-bench" id="brew-bench">
+				<section
+					ref={benchRef}
+					className="workshop-bench"
+					id="brew-bench"
+					aria-label="Brew bench"
+					tabIndex={-1}
+				>
 					{mentorNote && (
 						<p className="rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
 							<span className="font-semibold">Mentor's note:</span> {mentorNote}
@@ -151,7 +163,7 @@ function Workshop() {
 					>
 						Choose ingredients ↓
 					</a>
-				</div>
+				</section>
 			</div>
 			{view.viewingAs === "gm" && <AnswerKey />}
 			<HouseRules />

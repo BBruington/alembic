@@ -10,7 +10,7 @@ Live: https://alembic-six.vercel.app
 
 The workshop starts with Wren Ashby, a level 5 Alchemist, 16 ingredients and a mentor's note for Healing Potion (Minor). The bench accepts up to four ingredient units, including repeats, and shows the four tradition totals as you mix. You can supply a table d20 or let the server roll it.
 
-Brewing resolves on the server, including ingredient and crafter gates, PF2e degrees of success, perfect batches and downtime. Results guide the next attempt with tradition arrows. The codex records discoveries and perfected recipes, and the brew log keeps the previous attempts. GM view has the answer key and reveal controls; player responses leave the hidden targets and recipes out. The crafter sheet changes Wren's level, Intelligence, Crafting, feat and tools.
+Brewing resolves on the server, including ingredient and crafter gates, PF2e degrees of success, perfect batches and downtime. Results guide the next attempt with tradition arrows. The codex saves your best formed combination for each potion, shows its off-by, and can replace the bench mix with it using **Add to bench**. The mentor's starting combination is available before your first brew; GM reveals never supply a combination. The brew log keeps the previous attempts. GM view has the answer key and reveal controls; player responses leave the hidden targets and GM recipes out. The crafter sheet changes Wren's level, Intelligence, Crafting, feat and tools.
 
 Clerk handles sign-in and Neon stores each account's workshop. This sandbox deliberately uses a Clerk development instance, so its development badge, accounts.dev redirect and OAuth branding are expected. There's no guest sign-in.
 

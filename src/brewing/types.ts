@@ -130,6 +130,7 @@ export interface CodexEntryView {
 	/** gates the crafter currently fails (excluding mix-dependent ones) */
 	crafterGates: Gate[];
 	bestOffBy: number | null;
+	solvedMix: Mix | null;
 	perfected: boolean;
 	source: "mentor" | "brewed" | "revealed";
 	note: string | null;

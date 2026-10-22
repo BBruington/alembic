@@ -1,4 +1,4 @@
-import type { Ingredient, Potion } from "./types";
+import type { Ingredient, Mix, Potion } from "./types";
 
 export const INGREDIENTS: readonly Ingredient[] = [
 	{
@@ -272,7 +272,12 @@ export const POTIONS: readonly Potion[] = [
 ];
 
 export const STARTER_POTION_ID = "healing-potion-minor";
-export const MENTOR_NOTE = "Heartmoss + Marsh Toad Gland";
+export const MENTOR_MIX: Mix = { heartmoss: 1, "marsh-toad-gland": 1 };
+export const MENTOR_NOTE = Object.keys(MENTOR_MIX)
+	.map(
+		(id) => INGREDIENTS.find((ingredient) => ingredient.id === id)?.name ?? id,
+	)
+	.join(" + ");
 
 export const WREN = {
 	name: "Wren Ashby",
