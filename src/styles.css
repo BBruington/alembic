@@ -386,35 +386,181 @@
 }
 
 .brewing-loader svg {
-	width: 6rem;
+	width: 9rem;
 	overflow: visible;
 }
 
 .brewing-loader-glass {
-	fill: none;
 	stroke: var(--primary);
-	stroke-width: 2.5;
+	stroke-opacity: 0.65;
+	stroke-width: 1.2;
+}
+
+.brewing-loader-tint {
+	stop-color: var(--arcane);
+	stop-opacity: 0.14;
+}
+
+.brewing-loader-tint-clear {
+	stop-color: var(--foreground);
+	stop-opacity: 0.025;
+}
+
+.brewing-loader-depth-top,
+.brewing-loader-depth-bottom {
+	stop-color: var(--background);
+}
+
+.brewing-loader-depth-top {
+	stop-opacity: 0;
+}
+
+.brewing-loader-depth-bottom {
+	stop-opacity: 0.28;
+}
+
+.brewing-loader-rim,
+.brewing-loader-highlight,
+.brewing-loader-steam path {
+	fill: none;
 	stroke-linecap: round;
-	stroke-linejoin: round;
+}
+
+.brewing-loader-rim {
+	stroke: var(--primary);
+	stroke-width: 1.5;
+}
+
+.brewing-loader-highlight {
+	stroke: var(--foreground);
+	stroke-opacity: 0.3;
+	stroke-width: 2;
+}
+
+.brewing-loader-wave {
+	animation: brewing-wave 4s linear infinite;
 }
 
 .brewing-loader-liquid {
-	fill: var(--primal);
-	opacity: 0.85;
+	fill: var(--arcane);
 }
 
-.brewing-loader-bubble {
-	fill: var(--foreground);
+.brewing-loader-liquid-primal,
+.brewing-loader-liquid-occult,
+.brewing-loader-liquid-divine {
 	opacity: 0;
-	animation: brewing-bubble 1.6s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+	animation: brewing-colour 16s linear infinite;
 }
 
-.brewing-loader-bubble:nth-of-type(2) {
-	animation-delay: 0.5s;
+.brewing-loader-liquid-primal {
+	fill: var(--primal);
 }
 
-.brewing-loader-bubble:nth-of-type(3) {
-	animation-delay: 1s;
+.brewing-loader-liquid-occult {
+	fill: var(--occult);
+	animation-delay: -12s;
+}
+
+.brewing-loader-liquid-divine {
+	fill: var(--divine);
+	animation-name: brewing-colour-divine;
+}
+
+.brewing-loader-bubbles circle {
+	fill: var(--foreground);
+	fill-opacity: 0.5;
+	stroke: var(--foreground);
+	stroke-opacity: 0.8;
+	stroke-width: 0.65;
+	opacity: 0.7;
+	animation: brewing-bubble 3s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+
+.brewing-loader-bubbles circle:nth-child(2) {
+	animation-duration: 3.6s;
+	animation-delay: -1.7s;
+}
+
+.brewing-loader-bubbles circle:nth-child(3) {
+	animation-duration: 2.8s;
+	animation-delay: -0.8s;
+}
+
+.brewing-loader-bubbles circle:nth-child(4) {
+	animation-duration: 4s;
+	animation-delay: -2.6s;
+}
+
+.brewing-loader-bubbles circle:nth-child(5) {
+	animation-duration: 3.4s;
+	animation-delay: -1.3s;
+}
+
+.brewing-loader-bubbles circle:nth-child(6) {
+	animation-duration: 3.8s;
+	animation-delay: -3s;
+}
+
+.brewing-loader-bubbles circle:nth-child(7) {
+	animation-duration: 3.2s;
+	animation-delay: -0.4s;
+}
+
+.brewing-loader-rings ellipse {
+	fill: none;
+	stroke: var(--foreground);
+	stroke-width: 0.65;
+	transform-box: fill-box;
+	transform-origin: center;
+	opacity: 0;
+	animation: brewing-pop 3.6s linear -1.7s infinite;
+}
+
+.brewing-loader-rings ellipse:nth-child(2) {
+	animation-duration: 4s;
+	animation-delay: -2.6s;
+}
+
+.brewing-loader-steam path {
+	stroke: var(--foreground);
+	stroke-width: 1.2;
+	opacity: 0.26;
+	animation: brewing-steam 4s cubic-bezier(0.23, 1, 0.32, 1) infinite;
+}
+
+.brewing-loader-steam path:nth-child(2) {
+	animation-duration: 4.8s;
+	animation-delay: -2.4s;
+}
+
+@keyframes brewing-wave {
+	to {
+		transform: translateX(-80px);
+	}
+}
+
+@keyframes brewing-colour {
+	0%,
+	50.01%,
+	100% {
+		opacity: 0;
+	}
+	12.5%,
+	50% {
+		opacity: 1;
+	}
+}
+
+@keyframes brewing-colour-divine {
+	0%,
+	50%,
+	100% {
+		opacity: 0;
+	}
+	62.5%,
+	87.5% {
+		opacity: 1;
+	}
 }
 
 @keyframes brewing-bubble {
@@ -422,19 +568,54 @@
 		transform: translateY(0);
 		opacity: 0;
 	}
-	20% {
+	15% {
 		opacity: 0.9;
 	}
+	75%,
 	100% {
-		transform: translateY(-14px);
+		transform: translateY(-30px);
+		opacity: 0;
+	}
+}
+
+@keyframes brewing-steam {
+	0% {
+		transform: translate(0, 3px);
+		opacity: 0.08;
+	}
+	25% {
+		opacity: 0.38;
+	}
+	100% {
+		transform: translate(3px, -7px);
+		opacity: 0.08;
+	}
+}
+
+@keyframes brewing-pop {
+	0%,
+	65% {
+		transform: scale(0.7);
+		opacity: 0;
+	}
+	75% {
+		transform: scale(1);
+		opacity: 0.8;
+	}
+	95%,
+	100% {
+		transform: scale(1.6);
 		opacity: 0;
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.brewing-loader-bubble {
+	.brewing-loader-wave,
+	.brewing-loader-liquid,
+	.brewing-loader-bubbles circle,
+	.brewing-loader-rings ellipse,
+	.brewing-loader-steam path {
 		animation: none;
-		opacity: 0.7;
 	}
 	[data-slot="sheet-content"],
 	[data-slot="sheet-overlay"],
