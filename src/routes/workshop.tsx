@@ -1,7 +1,8 @@
 import { auth } from "@clerk/tanstack-react-start/server";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
+import { CircleHelp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { BrewView, Mix } from "#/brewing/types";
 import { HouseRules } from "#/components/HouseRules";
@@ -104,7 +105,15 @@ function Workshop() {
 		<main className="workshop-layout page-wrap">
 			<div className="workshop-heading">
 				<h1 className="text-2xl font-semibold tracking-tight">The workshop</h1>
-				<ViewingToggle viewingAs={view.viewingAs} isGm={view.isGm} />
+				<div className="flex flex-wrap items-center gap-3">
+					<Button asChild variant="ghost" size="sm">
+						<Link to="/" hash="first-brew">
+							<CircleHelp className="size-4" aria-hidden="true" />
+							New here? How brewing works
+						</Link>
+					</Button>
+					<ViewingToggle viewingAs={view.viewingAs} isGm={view.isGm} />
+				</div>
 			</div>
 			<CrafterCard crafter={view.crafter} />
 			<div className="workshop-workspace">
