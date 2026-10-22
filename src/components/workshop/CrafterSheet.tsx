@@ -64,7 +64,7 @@ export function CrafterSheet({ crafter }: { crafter: CrafterView }) {
 					Edit crafter
 				</Button>
 			</SheetTrigger>
-			<SheetContent className="overflow-y-auto">
+			<SheetContent className="w-full overflow-y-auto">
 				<SheetHeader>
 					<SheetTitle>Edit {crafter.name}</SheetTitle>
 					<SheetDescription>

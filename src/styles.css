@@ -304,7 +304,7 @@
 		grid-row: 1;
 	}
 	.bench-mobile-link {
-		display: block;
+		display: flex;
 	}
 }
 
@@ -432,10 +432,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-	*, *::before, *::after {
-		animation-duration: 0.01ms !important;
-		animation-iteration-count: 1 !important;
-		transition-duration: 0.01ms !important;
+	.brewing-loader-bubble {
+		animation: none;
+		opacity: 0.7;
+	}
+	[data-slot="sheet-content"],
+	[data-slot="sheet-overlay"],
+	[data-slot="dialog-content"],
+	[data-slot="dialog-overlay"],
+	[data-slot="select-content"],
+	[data-slot="tooltip-content"],
+	[data-slot="switch-thumb"] {
+		animation: none !important;
+		transition: none !important;
+	}
+	* {
 		scroll-behavior: auto !important;
 	}
 }

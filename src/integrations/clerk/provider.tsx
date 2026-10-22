@@ -10,6 +10,20 @@ export default function AppClerkProvider({
 			signInUrl={import.meta.env.VITE_CLERK_SIGN_IN_URL || "/sign-in"}
 			signUpUrl={import.meta.env.VITE_CLERK_SIGN_UP_URL || "/sign-up"}
 			afterSignOutUrl="/"
+			localization={{
+				signIn: {
+					start: {
+						title: "Sign in to Alembic",
+						titleCombined: "Sign in to Alembic",
+					},
+				},
+				signUp: {
+					start: {
+						title: "Create your Alembic account",
+						titleCombined: "Create your Alembic account",
+					},
+				},
+			}}
 			appearance={{
 				variables: {
 					colorPrimary: "#d3af68",

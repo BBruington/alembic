@@ -2,7 +2,7 @@ import { auth } from "@clerk/tanstack-react-start/server";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { CircleHelp } from "lucide-react";
+import { ArrowDown, ArrowUp, CircleHelp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { BrewView, Mix } from "#/brewing/types";
 import { HouseRules } from "#/components/HouseRules";
@@ -181,9 +181,10 @@ function Workshop() {
 					</div>
 					<a
 						href="#ingredients"
-						className="bench-mobile-link text-sm text-primary underline underline-offset-4"
+						className="bench-mobile-link items-center gap-2 text-sm text-primary underline underline-offset-4"
 					>
-						Choose ingredients ↓
+						Choose ingredients{" "}
+						<ArrowDown className="size-4" aria-hidden="true" />
 					</a>
 				</section>
 			</div>
@@ -195,7 +196,10 @@ function Workshop() {
 				hidden={benchVisible}
 			>
 				<span>Brew bench</span>
-				<span>{units} / 4 units · Review mix ↑</span>
+				<span className="flex items-center gap-2">
+					{units} / 4 units · Review mix
+					<ArrowUp className="size-4" aria-hidden="true" />
+				</span>
 			</a>
 		</main>
 	);
