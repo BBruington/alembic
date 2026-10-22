@@ -68,11 +68,9 @@ export function toWorkshopView(input: {
 			odds: odds(crafter.modifier, dc),
 			crafterGates: crafterGates(potion, crafter),
 			bestOffBy: entry.bestOffBy,
-			solvedMix: entry.formed
-				? entry.bestMix
-				: entry.mentor && potion.id === STARTER_POTION_ID
-					? MENTOR_MIX
-					: null,
+			solvedMix:
+				(entry.formed ? entry.bestMix : null) ??
+				(entry.mentor && potion.id === STARTER_POTION_ID ? MENTOR_MIX : null),
 			perfected: entry.perfected,
 			source: entry.mentor ? "mentor" : entry.formed ? "brewed" : "revealed",
 			note: entry.note,
