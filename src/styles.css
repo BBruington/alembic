@@ -257,6 +257,10 @@
 	display: none;
 }
 
+.mobile-bench-shortcut[hidden] {
+	display: none;
+}
+
 .brew-log-region {
 	container-type: inline-size;
 }

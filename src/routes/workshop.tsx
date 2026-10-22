@@ -2,7 +2,7 @@ import { auth } from "@clerk/tanstack-react-start/server";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { createServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { BrewView, Mix } from "#/brewing/types";
 import { HouseRules } from "#/components/HouseRules";
 import { Button } from "#/components/ui/button";
@@ -32,6 +32,19 @@ function Workshop() {
 	const workshop = useQuery(orpc.workshop.get.queryOptions());
 	const [mix, setMix] = useState<Mix>({});
 	const [result, setResult] = useState<BrewView | null>(null);
+	const benchRef = useRef<HTMLDivElement>(null);
+	const [benchVisible, setBenchVisible] = useState(true);
+	const hasWorkshop = workshop.data !== undefined;
+	useEffect(() => {
+		if (!hasWorkshop) return;
+		const bench = benchRef.current;
+		if (!bench) return;
+		const observer = new IntersectionObserver(([entry]) => {
+			setBenchVisible(entry.isIntersecting);
+		});
+		observer.observe(bench);
+		return () => observer.disconnect();
+	}, [hasWorkshop]);
 	const brew = useMutation(
 		orpc.brew.attempt.mutationOptions({
 			onMutate: () => setResult(null),
@@ -111,7 +124,7 @@ function Workshop() {
 						</TabsContent>
 					</Tabs>
 				</div>
-				<div className="workshop-bench" id="brew-bench">
+				<div ref={benchRef} className="workshop-bench" id="brew-bench">
 					{mentorNote && (
 						<p className="rounded-lg border border-primary/30 bg-primary/10 px-4 py-3 text-sm">
 							<span className="font-semibold">Mentor's note:</span> {mentorNote}
@@ -142,7 +155,11 @@ function Workshop() {
 			</div>
 			{view.viewingAs === "gm" && <AnswerKey />}
 			<HouseRules />
-			<a href="#brew-bench" className="mobile-bench-shortcut">
+			<a
+				href="#brew-bench"
+				className="mobile-bench-shortcut"
+				hidden={benchVisible}
+			>
 				<span>Brew bench</span>
 				<span>{units} / 4 units · Review mix ↑</span>
 			</a>
